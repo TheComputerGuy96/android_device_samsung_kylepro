@@ -8,6 +8,10 @@ PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 DEVICE_PACKAGE_OVERLAYS += device/samsung/kylepro/overlay
 
+# Boot animation
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/bootanimation/bootanimation.zip:system/media/bootanimation.zip
+
 # Init files
 PRODUCT_COPY_FILES += \
     device/samsung/kylepro/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
@@ -137,15 +141,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.media.use-awesome=true
 
 # Dalvik heap config
-include frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk
+include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 
-# Texture config.
-include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
+# Packages
+PRODUCT_PACKAGES += \
+            CellBroadcastReceiver \
+            charger_res_images \ 
+            Launcher3 \
+            SamsungServiceMode \ 
+            SoundRecorder \ 
+            Stk
 
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_kylepro
-PRODUCT_DEVICE := kylepro
-PRODUCT_MODEL := GT-S7580
