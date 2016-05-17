@@ -294,7 +294,7 @@ typedef uint32_t GpsMeasurementFlags;
 /** A valid 'used in fix' flag is stored in the data structure. */
 #define GPS_MEASUREMENT_HAS_USED_IN_FIX                 (1<<17)
 /** The value of 'pseudorange rate' is uncorrected. */
-#define GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE       (1<<18)
+#define GPS_MEASUREMENT_HAS_UNCORRECTED_PSEUDORANGE_RATE      (1<<18)
 
 /**
  * Enumeration of the available values for the GPS Measurement's loss of lock.
