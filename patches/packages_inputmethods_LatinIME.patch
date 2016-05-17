@@ -1,0 +1,49 @@
+From caddf6d58656ce73f83e091f34cb1b7ad19c9eed Mon Sep 17 00:00:00 2001
+From: Steve Kondik <shade@chemlab.org>
+Date: Fri, 6 Dec 2013 19:21:08 +0100
+Subject: [PATCH] LatinIME: Add fallback loader for JNI lib
+
+Prefer the JNI lib with gesture typing support.
+If not available / installed fall back to the standard one without
+geture typing.
+
+Change-Id: I70a5f43386a9c72809a70bd286f3702378d6f9be
+---
+ .../src/com/android/inputmethod/latin/define/JniLibName.java   |  1 +
+ java/src/com/android/inputmethod/latin/utils/JniUtils.java     | 10 +++++++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java b/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java
+index abfc36d..0fcf7ee 100644
+--- a/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java
++++ b/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java
+@@ -22,4 +22,5 @@ public final class JniLibName {
+     }
+ 
+     public static final String JNI_LIB_NAME = "jni_latinime";
++    public static final String JNI_LIB_NAME2 = "jni_unbundled_latinimegoogle";
+ }
+diff --git a/java/src/com/android/inputmethod/latin/utils/JniUtils.java b/java/src/com/android/inputmethod/latin/utils/JniUtils.java
+index e7fdafa..0e4f582 100644
+--- a/java/src/com/android/inputmethod/latin/utils/JniUtils.java
++++ b/java/src/com/android/inputmethod/latin/utils/JniUtils.java
+@@ -25,9 +25,13 @@ public final class JniUtils {
+ 
+     static {
+         try {
+-            System.loadLibrary(JniLibName.JNI_LIB_NAME);
+-        } catch (UnsatisfiedLinkError ule) {
+-            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
++            System.loadLibrary(JniLibName.JNI_LIB_NAME2);
++        } catch (UnsatisfiedLinkError ue) {
++            try {
++                System.loadLibrary(JniLibName.JNI_LIB_NAME);
++            } catch (UnsatisfiedLinkError ule) {
++                Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
++            }
+         }
+     }
+ 
+-- 
+2.8.2
+
