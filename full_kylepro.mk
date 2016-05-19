@@ -11,6 +11,5 @@ $(call inherit-product, device/samsung/kylepro/device_kylepro.mk)
 PRODUCT_DEVICE := kylepro
 PRODUCT_NAME := full_kylepro
 PRODUCT_BRAND := samsung
-PRODUCT_MANUFACTURER := samsung
+PRODUCT_MANUFACTURER := Samsung
 PRODUCT_MODEL := GT-S7580
-PRODUCT_CHARACTERISTICS := phone
