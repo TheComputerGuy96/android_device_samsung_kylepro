@@ -149,10 +149,10 @@ include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 # Packages
 PRODUCT_PACKAGES += \
             CellBroadcastReceiver \
-            charger_res_images \ 
+            charger_res_images \
             Launcher3 \
-            SamsungServiceMode \ 
-            SoundRecorder \ 
+            SamsungServiceMode \
+            SoundRecorder \
             Stk
 
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
