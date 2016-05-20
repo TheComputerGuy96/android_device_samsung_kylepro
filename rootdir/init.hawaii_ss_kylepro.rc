@@ -16,6 +16,7 @@ on init
     symlink /efs /factory
     symlink /dev/block/mmcblk0p11 /dev/block/param
 
+    write /sys/fs/selinux/enforce 0
 on post-fs-data
 # We will remap this as /storage/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
@@ -135,8 +136,6 @@ on boot
 # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
     write /sys/block/mmcblk0/queue/scheduler noop
 # SISO-ANDR_PERF :: END
-
-    write /sys/fs/selinux/enforce 0
 
     setprop ro.build.product hawaii
     setprop ro.product.device hawaii
