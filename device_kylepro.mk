@@ -153,7 +153,6 @@ PRODUCT_PACKAGES += \
             CellBroadcastReceiver \
             charger_res_images \
             Launcher3 \
-            SamsungServiceMode \
             SoundRecorder \
             Stk
 
