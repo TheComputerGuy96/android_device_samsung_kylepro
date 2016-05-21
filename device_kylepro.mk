@@ -10,7 +10,7 @@ DEVICE_PACKAGE_OVERLAYS += device/samsung/kylepro/overlay
 
 # Boot animation
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/bootanimation/bootanimation.zip:system/media/bootanimation.zip
+   device/samsung/kylepro/bootanimation/bootanimation.zip:system/media/bootanimation.zip
 
 # Init files
 PRODUCT_COPY_FILES += \
