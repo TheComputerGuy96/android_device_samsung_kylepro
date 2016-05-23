@@ -5,7 +5,7 @@ Subject: [PATCH] Actually make .patch file
 
 ---
  external/sepolicy/domain.te | 2 ++--
- 1 file changed, 1 insertions(+), 1 deletion(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/external/sepolicy/domain.te b/external/sepolicy/domain.te
 index 0f6c6da..b7aec3a 100644
