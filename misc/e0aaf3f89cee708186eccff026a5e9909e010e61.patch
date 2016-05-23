@@ -4,8 +4,8 @@ Date: Mon, 23 May 2016 22:06:37 +0300
 Subject: [PATCH] Actually make .patch file
 
 ---
- external/sepolicy/domain.te | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ external/sepolicy/domain.te | 2 ++--
+ 1 file changed, 1 insertions(+), 1 deletion(-)
 
 diff --git a/external/sepolicy/domain.te b/external/sepolicy/domain.te
 index 0f6c6da..b7aec3a 100644
@@ -20,12 +20,3 @@ index 0f6c6da..b7aec3a 100644
  neverallow { domain -kernel } kernel:security setcheckreqprot;
  
  # No booleans in AOSP policy, so no need to ever set them.
-@@ -319,7 +319,7 @@ neverallow domain rootfs:file { create write setattr relabelto append unlink lin
- 
- # Restrict context mounts to specific types marked with
- # the contextmount_type attribute.
--neverallow domain {fs_type -contextmount_type}:filesystem relabelto;
-+neverallow domain {fs_type -contextmount_type -sdcard_posix}:filesystem relabelto;
- 
- # Ensure that context mount types are not writable, to ensure that
- # the write to /system restriction above is not bypassed via context=
