@@ -1,0 +1,96 @@
+From f01eaf2d931e176133a3f8bafc45045b8adf9706 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 31 May 2014 12:34:56 +0700
+Subject: [PATCH 1/2] telephony: support for RIL that does not send
+ UNSOL_CALL_RING
+
+Samsung Broadcom RIL does not send UNSOL_CALL_RING at all, so it
+needs to be faked or non loop (e.g. Digital Phone) ringtones
+won't work.
+
+Change-Id: Ib7373d32777f6c42ee488972a7aa63ae8e1cd09b
+---
+ .../com/android/internal/telephony/PhoneBase.java     | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/src/java/com/android/internal/telephony/PhoneBase.java b/src/java/com/android/internal/telephony/PhoneBase.java
+index 537e6a3..46dcdcc 100644
+--- a/src/java/com/android/internal/telephony/PhoneBase.java
++++ b/src/java/com/android/internal/telephony/PhoneBase.java
+@@ -235,6 +235,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+     boolean mDnsCheckDisabled;
+     public DcTrackerBase mDcTracker;
+     boolean mDoesRilSendMultipleCallRing;
++    boolean mDoesRilSendCallRing;
+     int mCallRingContinueToken;
+     int mCallRingDelay;
+     public boolean mIsTheCurrentActivePhone = true;
+@@ -468,6 +469,11 @@ public abstract class PhoneBase extends Handler implements Phone {
+                 TelephonyProperties.PROPERTY_RIL_SENDS_MULTIPLE_CALL_RING, true);
+         Rlog.d(LOG_TAG, "mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
+ 
++        // Some RIL do not even send a single RIL_UNSOL_CALL_RING
++        mDoesRilSendCallRing = SystemProperties.getBoolean(
++                "ro.telephony.call_ring", true);
++        Rlog.d(LOG_TAG, "mDoesRilSendCallRing=" + mDoesRilSendCallRing);
++
+         mCallRingDelay = SystemProperties.getInt(
+                 TelephonyProperties.PROPERTY_CALL_RING_DELAY, 3000);
+         Rlog.d(LOG_TAG, "mCallRingDelay=" + mCallRingDelay);
+@@ -2177,6 +2183,18 @@ public abstract class PhoneBase extends Handler implements Phone {
+     public void notifyNewRingingConnectionP(Connection cn) {
+         if (!mIsVoiceCapable)
+             return;
++
++        // Fake RIL_UNSOL_CALL_RING if the RIL doesn't send it.
++        // Note that we need the delay to prevent the request from
++        // being sent after CallTracker detects "RINGING" state, but
++        // before the correct contact-specific ringtone is queried.
++        // Otherwise, the incorrect ringtone will be used
++        if (!mDoesRilSendCallRing) {
++            int token = ++mCallRingContinueToken;
++            sendMessageDelayed(
++                    obtainMessage(EVENT_CALL_RING_CONTINUE, token, 0), mCallRingDelay);
++        }
++
+         AsyncResult ar = new AsyncResult(null, cn, null);
+         mNewRingingConnectionRegistrants.notifyRegistrants(ar);
+     }
+@@ -2787,6 +2805,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+         pw.println(" mDnsCheckDisabled=" + mDnsCheckDisabled);
+         pw.println(" mDcTracker=" + mDcTracker);
+         pw.println(" mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
++        pw.println(" mDoesRilSendCallRing=" + mDoesRilSendCallRing);
+         pw.println(" mCallRingContinueToken=" + mCallRingContinueToken);
+         pw.println(" mCallRingDelay=" + mCallRingDelay);
+         pw.println(" mIsTheCurrentActivePhone=" + mIsTheCurrentActivePhone);
+-- 
+2.8.1
+
+
+From 42fae2fb9dcbb7cbd33aa3b7a8ae542b6a1b632a Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 17:39:50 +0700
+Subject: [PATCH 2/2] telephony: RIL: i9082: set correct rild names
+
+Change-Id: Idf8e98ae2f36f30b84be04b7b062ca4b52cebd8a
+---
+ src/java/com/android/internal/telephony/RIL.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 6a38927..85bc8b7 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -303,7 +303,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+     static final int RESPONSE_SOLICITED = 0;
+     static final int RESPONSE_UNSOLICITED = 1;
+ 
+-    static final String[] SOCKET_NAME_RIL = {"rild", "rild2", "rild3"};
++    static final String[] SOCKET_NAME_RIL = {"rild", "rild1", "rild2"};
+ 
+     static final int SOCKET_OPEN_RETRY_MILLIS = 4 * 1000;
+ 
+-- 
+2.8.1
+
