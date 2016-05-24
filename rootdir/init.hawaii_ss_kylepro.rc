@@ -492,15 +492,6 @@ on post-fs
     chown radio system /efs
     chmod 0771 /efs
 
-# Create filesystem if necessary
-    service setup_fs /system/bin/setup_fs \
-                /dev/block/mmcblk0p15 \
-                /dev/block/mmcblk0p11
-        class core
-        user root
-        group root
-        oneshot
-
 # Bosch Sensor Deamon
     service sensord /system/bin/sensord
         class main
