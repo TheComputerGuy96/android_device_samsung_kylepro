@@ -1,25 +1,23 @@
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
-$(call inherit-product-if-exists, vendor/samsung/kyleproxx/kyleproxx-common-vendor.mk)
+$(call inherit-product, vendor/samsung/kyleproxx/kyleproxx-common-vendor.mk)
 
 PRODUCT_LOCALES += hdpi
 PRODUCT_AAPT_CONFIG := normal hdpi xhdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
-DEVICE_PACKAGE_OVERLAYS += device/samsung/kylepro/overlay
+DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Boot animation
 PRODUCT_COPY_FILES += \
-   device/samsung/kylepro/bootanimation/bootanimation.zip:system/media/bootanimation.zip
+    $(LOCAL_PATH)/bootanimation/bootanimation.zip:system/media/bootanimation.zip
 
 # Init files
 PRODUCT_COPY_FILES += \
-    device/samsung/kylepro/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
-    device/samsung/kylepro/rootdir/init.rc:root/init.rc \
-    device/samsung/kylepro/rootdir/init.hawaii_ss_kylepro.rc:root/init.hawaii_ss_kylepro.rc \
-    device/samsung/kylepro/rootdir/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
-    device/samsung/kylepro/rootdir/init.log.rc:root/init.log.rc \
-    device/samsung/kylepro/rootdir/ueventd.hawaii_ss_kylepro.rc:root/ueventd.hawaii_ss_kylepro.rc
+    $(LOCAL_PATH)/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
+    $(LOCAL_PATH)/rootdir/init.rc:root/init.rc \
+    $(LOCAL_PATH)/rootdir/init.hawaii_ss_kylepro.rc:root/init.hawaii_ss_kylepro.rc \
+    $(LOCAL_PATH)/rootdir/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.log.rc:root/init.log.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.hawaii_ss_kylepro.rc:root/ueventd.hawaii_ss_kylepro.rc
 
 # Google's Software Decoder.
 PRODUCT_COPY_FILES += \
@@ -29,27 +27,25 @@ PRODUCT_COPY_FILES += \
 
 # Configs
 PRODUCT_COPY_FILES += \
-    device/samsung/kylepro/configs/media_codecs.xml:system/etc/media_codecs.xml
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
 
 # Insecure ADB
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
     ro.adb.secure=0 \
 
-# Filesystem management tools
-PRODUCT_PACKAGES += \
-    make_ext4fs \
-    e2fsck \
-    setup_fs
-
 # GPS/RIL
 PRODUCT_PACKAGES += \
     libstlport \
     libglgps-compat
 
-# USB accessory
+# Packages
 PRODUCT_PACKAGES += \
-    com.android.future.usb.accessory
+    CellBroadcastReceiver \
+    charger_res_images \
+    Launcher3 \
+    SoundRecorder \
+    Stk
 
 # Misc other modules
 PRODUCT_PACKAGES += \
@@ -115,7 +111,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     cm.updater.uri=http://ota.sandpox.org/api \
     ro.telephony.call_ring.multiple=0 \
     camera2.portability.force_api=1 \
-    ro.telephony.call_ring=0
+    ro.telephony.call_ring=0 \
     ro.build.selinux=1 \
 
 # Enable Google-specific location features,
@@ -137,10 +133,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     dalvik.vm.dex2oat-flags=--no-watch-dog
 
-# Multiple threads for dex2oat
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.sys.fw.dex2oat_thread_count=2
-
 # Use Awesomeplayer
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.media.use-awesome=true
@@ -148,12 +140,4 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Dalvik heap config
 include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 
-# Packages
-PRODUCT_PACKAGES += \
-            CellBroadcastReceiver \
-            charger_res_images \
-            Launcher3 \
-            SoundRecorder \
-            Stk
-
-$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
+$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)

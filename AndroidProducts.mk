@@ -1,3 +1,3 @@
 PRODUCT_MAKEFILES := \
-            device/samsung/kylepro/aosp_kylepro.mk \
-            device/samsung/kylepro/full_kylepro.mk \
+    $(LOCAL_DIR)/aosp_kylepro.mk \
+    $(LOCAL_DIR)/full_kylepro.mk

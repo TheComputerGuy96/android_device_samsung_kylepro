@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../../../
+
 COUNT=0
 CURRENT_DIR="$PWD"
 PD="device/samsung/kylepro/patches"

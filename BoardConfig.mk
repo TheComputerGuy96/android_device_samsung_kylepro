@@ -163,5 +163,4 @@ BOARD_MTP_DEVICE                            := /dev/mtp_usb
 TARGET_SPECIFIC_HEADER_PATH                 := device/samsung/kylepro/include
 
 # SELinux
-BOARD_SEPOLICY_DIRS += \
-    device/samsung/kylepro/sepolicy
+BOARD_SEPOLICY_DIRS += device/samsung/kylepro/sepolicy
