@@ -1,0 +1,121 @@
+diff -ur a/build/core/tasks/kernel.mk b/build/core/tasks/kernel.mk
+--- a/build/core/tasks/kernel.mk	2016-05-08 03:42:44.688995999 +0000
++++ b/build/core/tasks/kernel.mk	2016-05-08 03:34:25.212995999 +0000
+@@ -230,7 +230,11 @@
+     ccache := $(strip $(wildcard $(ccache)))
+ endif
+ 
+-KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
++ifneq ($(TARGET_KERNEL_CUSTOM_TOOLCHAIN),)     
++    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-"      
++else
++    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
++endif
+ ccache =
+ 
+ define mv-modules
+diff -ur a/external/icu/icu4c/source/common/ucnv.c b/external/icu/icu4c/source/common/ucnv.c
+--- a/external/icu/icu4c/source/common/ucnv.c	2016-05-08 03:43:11.920995999 +0000
++++ b/external/icu/icu4c/source/common/ucnv.c	2016-05-08 03:34:25.212995999 +0000
+@@ -2914,6 +2914,76 @@
+             return FALSE;
+     }
+ }
++
++U_CAPI void    U_EXPORT2 ucnv_setToUCallBack_48 (UConverter * converter,
++                            UConverterToUCallback newAction,
++                            const void* newContext,
++                            UConverterToUCallback *oldAction,
++                            const void** oldContext,
++                            UErrorCode * err) {
++  ucnv_setToUCallBack(converter, newAction, newContext,
++        oldAction, oldContext, err);
++}
++
++U_CAPI void  U_EXPORT2 ucnv_close_48 (UConverter * converter) {
++  ucnv_close (converter);
++}
++
++U_CAPI void  U_EXPORT2
++ucnv_setFromUCallBack_48 (UConverter * converter,
++                            UConverterFromUCallback newAction,
++                            const void* newContext,
++                            UConverterFromUCallback *oldAction,
++                            const void** oldContext,
++                            UErrorCode * err) {
++
++  ucnv_setFromUCallBack(converter, newAction, newContext, oldAction,
++        oldContext, err);
++}
++
++U_CAPI void U_EXPORT2
++ucnv_convertEx_48 (UConverter *targetCnv, UConverter *sourceCnv,
++               char **target, const char *targetLimit,
++               const char **source, const char *sourceLimit,
++               UChar *pivotStart, UChar **pivotSource,
++               UChar **pivotTarget, const UChar *pivotLimit,
++               UBool reset, UBool flush,
++               UErrorCode *pErrorCode) {
++  ucnv_convertEx(targetCnv, sourceCnv, target, targetLimit, source,
++        sourceLimit, pivotStart, pivotSource,
++        pivotTarget, pivotLimit, reset, flush,
++        pErrorCode);
++}
++
++U_CAPI UConverter* U_EXPORT2
++ucnv_open_48 (const char *name,
++                       UErrorCode * err) {
++  return ucnv_open(name, err);
++}
++
++U_STABLE void U_EXPORT2 UCNV_FROM_U_CALLBACK_STOP_48 (
++                  const void *context,
++                  UConverterFromUnicodeArgs *fromUArgs,
++                  const UChar* codeUnits,
++                  int32_t length,
++                  UChar32 codePoint,
++                  UConverterCallbackReason reason,
++                  UErrorCode * err) {
++  return UCNV_FROM_U_CALLBACK_STOP(context, fromUArgs, codeUnits,
++      length, codePoint, reason, err);
++}
++
++U_STABLE void U_EXPORT2 UCNV_TO_U_CALLBACK_STOP_48 (
++                  const void *context,
++                  UConverterToUnicodeArgs *toUArgs,
++                  const char* codeUnits,
++                  int32_t length,
++                  UConverterCallbackReason reason,
++                  UErrorCode * err) {
++  return UCNV_TO_U_CALLBACK_STOP(context, toUArgs, codeUnits, length,
++      reason, err);
++}
++
+ #endif
+ 
+ /*
+diff -ur a/external/sepolicy/domain.te b/external/sepolicy/domain.te
+--- a/external/sepolicy/domain.te	2016-05-08 03:43:28.956995999 +0000
++++ b/external/sepolicy/domain.te	2016-05-08 03:34:25.216995999 +0000
+@@ -236,7 +236,7 @@
+ # init starts in kernel domain and switches to init domain via setcon in
+ # the init.rc, so the setenforce occurs while still in kernel. After
+ # switching domains, there is never any need to setenforce again by init.
+-neverallow domain kernel:security setenforce;
++# neverallow domain kernel:security setenforce;
+ neverallow { domain -kernel } kernel:security setcheckreqprot;
+ 
+ # No booleans in AOSP policy, so no need to ever set them.
+@@ -323,11 +323,7 @@
+ 
+ # Restrict context mounts to specific types marked with
+ # the contextmount_type attribute.
+-ifelse(shipping_build, `true',
+-  `neverallow domain {fs_type -contextmount_type}:filesystem relabelto;'
+-,
+-  `neverallow domain {fs_type -contextmount_type -sdcard_posix}:filesystem relabelto;'
+-)
++neverallow domain {fs_type -contextmount_type -sdcard_posix}:filesystem relabelto;
+ 
+ # Ensure that context mount types are not writable, to ensure that
+ # the write to /system restriction above is not bypassed via context=
