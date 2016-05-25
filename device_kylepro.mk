@@ -55,7 +55,6 @@ PRODUCT_PACKAGES += \
     audio.primary.default \
     libaudio-resampler \
     lights.hawaii \
-    power.hawaii \
     libstagefrighthw
 
 # IPv6 tethering
