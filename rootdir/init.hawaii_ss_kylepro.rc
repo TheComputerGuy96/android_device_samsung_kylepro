@@ -6,6 +6,8 @@ on early-init
     chown system system /sys/devices/platform/pwm-backlight.0/backlight/panel/brightness
 
 on init
+    write /sys/fs/selinux/enforce 0
+
     mkdir /tmp
     mount tmpfs tmpfs /tmp
     chmod 1775 /tmp
@@ -135,8 +137,6 @@ on boot
 # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
     write /sys/block/mmcblk0/queue/scheduler noop
 # SISO-ANDR_PERF :: END
-
-    write /sys/fs/selinux/enforce 0
 
     setprop ro.build.product hawaii
     setprop ro.product.device hawaii
@@ -595,11 +595,7 @@ on post-fs
         class main
         oneshot
 
-    service playlpm /system/bin/playlpm
-        class sec-charger
-        critical
-
-    service lpmkey /system/bin/lpmkey
+    service lpm /system/bin/lpm
         class sec-charger
         critical
 
@@ -611,6 +607,7 @@ on property:init.svc.macloader=stopped
 # End of wifi
 
     service gpsd /system/bin/glgps -c /system/etc/gps/glconfig.xml
+        setenv LD_PRELOAD /system/lib/libglgps-compat.so
         class late_start
         user gps
         group system root inet radio wifi sdcard_rw
