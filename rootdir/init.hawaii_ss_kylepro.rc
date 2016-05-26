@@ -4,6 +4,7 @@ import init.log.rc
 on early-init
     mkdir /efs 0771 radio system
     chown system system /sys/devices/platform/pwm-backlight.0/backlight/panel/brightness
+    write /sys/fs/selinux/enforce 0
 
 on init
     mkdir /tmp
@@ -207,6 +208,8 @@ on boot
 
     chown system system /proc/bcm_fuse_net_config
 
+    write /sys/fs/selinux/enforce 0
+
 # Video Telephony
     chmod 0666 /dev/bcm_vsp
 
@@ -400,6 +403,7 @@ on boot
     write /proc/sys/vm/min_free_order_shift 4
 
 on charger
+    write /sys/fs/selinux/enforce 0
     mkdir /system
     mkdir /data
     mount ext4 /dev/block/mmcblk0p17 /system ro wait noatime
@@ -634,6 +638,7 @@ on property:dev.bootcomplete=1
     write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 6000
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 15000
     write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 2000
+    write /sys/fs/selinux/enforce 0
 
 # Change dirty_bytes and dirty_background_bytes for 4GB TLC memory
     write proc/sys/vm/dirty_bytes 14680064

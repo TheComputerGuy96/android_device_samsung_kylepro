@@ -6,13 +6,10 @@
 
 import /init.environ.rc
 import /init.usb.rc
-import /init.${ro.hardware}.rc
+import /init.hawaii_ss_kylepro.rc
 import /init.usb.configfs.rc
 import /init.${ro.zygote}.rc
 import /init.trace.rc
-# Include CM's extra init file
-import /init.cm.rc
-
 
 on early-init
     # Set init and its forked children's oom_adj.
