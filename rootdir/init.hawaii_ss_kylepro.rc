@@ -18,6 +18,8 @@ on init
     symlink /dev/block/mmcblk0p11 /dev/block/param
 
     write /sys/fs/selinux/enforce 0
+# Logging kernel messages
+    cat /proc/kmsg > /sdcard/aosp6_kmsg.txt
 on post-fs-data
 # We will remap this as /storage/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
@@ -140,6 +142,9 @@ on boot
 
     setprop ro.build.product hawaii
     setprop ro.product.device hawaii
+
+# Logging system messages
+    logcat > /sdcard/aosp6_logcat.txt
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
