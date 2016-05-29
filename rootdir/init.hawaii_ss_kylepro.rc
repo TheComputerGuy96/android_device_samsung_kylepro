@@ -20,6 +20,7 @@ on init
     write /sys/fs/selinux/enforce 0
 # Logging kernel messages
     cat /proc/kmsg > /sdcard/aosp6_kmsg.txt
+    killall cat
 on post-fs-data
 # We will remap this as /storage/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
@@ -144,7 +145,9 @@ on boot
     setprop ro.product.device hawaii
 
 # Logging system messages
+    logcat -c
     logcat > /sdcard/aosp6_logcat.txt
+    logcat -c
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
@@ -624,6 +627,7 @@ on property:init.svc.macloader=stopped
 
 # Indicate boot complete to PM to complete PM initialization
 on property:dev.bootcomplete=1
+    logcat -c
     write /sys/module/pwr_mgr/parameters/pm_late_init 1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor interactive
     chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
