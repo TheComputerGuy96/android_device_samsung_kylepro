@@ -6,7 +6,7 @@
 
 import /init.environ.rc
 import /init.usb.rc
-import /init.hawaii_ss_kylepro.rc
+import /init.$(ro.hardware).rc
 import /init.usb.configfs.rc
 import /init.${ro.zygote}.rc
 import /init.trace.rc

@@ -17,10 +17,6 @@ on init
     symlink /efs /factory
     symlink /dev/block/mmcblk0p11 /dev/block/param
 
-    write /sys/fs/selinux/enforce 0
-# Logging kernel messages
-    cat /proc/kmsg > /sdcard/aosp6_kmsg.txt
-    killall cat
 on post-fs-data
 # We will remap this as /storage/sdcard with the sdcard fuse tool
     mkdir /data/media 0770 media_rw media_rw
@@ -144,11 +140,6 @@ on boot
     setprop ro.build.product hawaii
     setprop ro.product.device hawaii
 
-# Logging system messages
-    logcat -c
-    logcat > /sdcard/aosp6_logcat.txt
-    logcat -c
-
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
 # WIFI
@@ -215,8 +206,6 @@ on boot
     chmod 0770 /dev/ttyS1
 
     chown system system /proc/bcm_fuse_net_config
-
-    write /sys/fs/selinux/enforce 0
 
 # Video Telephony
     chmod 0666 /dev/bcm_vsp
@@ -646,7 +635,6 @@ on property:dev.bootcomplete=1
     write /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 6000
     write /sys/devices/system/cpu/cpufreq/interactive/min_sample_time 15000
     write /sys/devices/system/cpu/cpufreq/interactive/timer_rate 2000
-    write /sys/fs/selinux/enforce 0
 
 # Change dirty_bytes and dirty_background_bytes for 4GB TLC memory
     write proc/sys/vm/dirty_bytes 14680064
