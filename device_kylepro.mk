@@ -13,6 +13,7 @@ PRODUCT_COPY_FILES += \
 # Init files
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
+    $(LOCAL_PATH)/rootdir/init.rc:root/init.rc \
     $(LOCAL_PATH)/rootdir/init.hawaii_ss_kylepro.rc:root/init.hawaii_ss_kylepro.rc \
     $(LOCAL_PATH)/rootdir/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
     $(LOCAL_PATH)/rootdir/init.log.rc:root/init.log.rc \
