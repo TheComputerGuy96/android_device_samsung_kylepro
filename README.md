@@ -22,8 +22,8 @@
   - Apply patch *PATCH_CM-13.0.diff* to root directory of CM-13.0 source code before build
 
 ### Other resource:
-  - Kernel source: https://github.com/SandPox/android_kernel_samsung_kyleproxx
-  - Vendor blobs: https://github.com/SandPox/android_vendor_samsung_kyleproxx
+  - Kernel source: https://github.com/TheComputerGuy96/android_kernel_samsung_kyleproxx
+  - Vendor blobs: https://github.com/TheComputerGuy96/android_vendor_samsung_kyleproxx
 
 ### More Information:
 ```sh
