@@ -28,13 +28,13 @@ BOARD_KERNEL_PAGESIZE                       := 4096
 BOARD_KERNEL_OFFSET                         := 0x00008000
 BOARD_RAMDISK_OFFSET                        := 0x01000000
 BOARD_KERNEL_TAGS_OFFSET                    := 0x00000100
-#ifeq ($(BUILD_TWRP),true)
-    #TARGET_KERNEL_CONFIG                    := bcm21664_hawaii_ss_kyleproxx_rev00_recovery_defconfig
-#else
-    #TARGET_KERNEL_CONFIG                    := bcm21664_hawaii_ss_kylepro_rev00_cyanogenmod_defconfig
-#endif
-#TARGET_KERNEL_SOURCE                        := kernel/samsung/kyleproxx
-#TARGET_KERNEL_CUSTOM_TOOLCHAIN              := arm-eabi-4.7
+ifeq ($(BUILD_TWRP),true)
+    TARGET_KERNEL_CONFIG                    := bcm21664_hawaii_ss_kyleproxx_rev00_recovery_defconfig
+else
+    TARGET_KERNEL_CONFIG                    := bcm21664_hawaii_ss_kylepro_rev00_cyanogenmod_defconfig
+endif
+TARGET_KERNEL_SOURCE                        := kernel/samsung/kyleproxx
+TARGET_KERNEL_CUSTOM_TOOLCHAIN              := arm-eabi-4.6
 TARGET_PREBUILT_KERNEL                      := device/samsung/kylepro/kernel
 # Extended filesystem support
 TARGET_KERNEL_HAVE_EXFAT                    := true
