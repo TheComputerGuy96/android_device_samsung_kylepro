@@ -1902,36 +1902,6 @@ diff -ur a/hardware/broadcom/libbt/src/userial_vendor.c b/hardware/broadcom/libb
      userial_ioctl_init_bt_wake(vnd_userial.fd);
  #endif
  
-diff -ur a/packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/utils/JniUtils.java b/packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/utils/JniUtils.java
---- a/packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/utils/JniUtils.java	2016-05-08 03:44:18.528995999 +0000
-+++ b/packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/utils/JniUtils.java	2016-05-08 03:34:25.228995999 +0000
-@@ -26,14 +26,10 @@
-     public static boolean mHaveGestureLib = false;
-     static {
-         try {
--            System.loadLibrary(JniLibName.JNI_LIB_NAME2);
-+            System.loadLibrary(JniLibName.JNI_LIB_NAME);
-             mHaveGestureLib = true;
--        } catch (UnsatisfiedLinkError ue) {
--            try {
--                System.loadLibrary(JniLibName.JNI_LIB_NAME);
--            } catch (UnsatisfiedLinkError ule) {
--                Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
--            }
-+        } catch (UnsatisfiedLinkError ule) {
-+            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
-         }
-     }
- 
-diff -ur a/packages/inputmethods/LatinIME/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java b/packages/inputmethods/LatinIME/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java
---- a/packages/inputmethods/LatinIME/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java	2016-05-08 03:44:18.116995999 +0000
-+++ b/packages/inputmethods/LatinIME/java-overridable/src/com/android/inputmethod/latin/define/JniLibName.java	2016-05-08 03:34:25.228995999 +0000
-@@ -22,5 +22,4 @@
-     }
- 
-     public static final String JNI_LIB_NAME = "jni_latinime";
--    public static final String JNI_LIB_NAME2 = "jni_latinimegoogle";
- }
 diff -ur a/system/core/include/utils/VectorImpl.h b/system/core/include/utils/VectorImpl.h
 --- a/system/core/include/utils/VectorImpl.h	2016-05-08 03:45:31.888995999 +0000
 +++ b/system/core/include/utils/VectorImpl.h	2016-05-08 03:34:25.232995999 +0000
