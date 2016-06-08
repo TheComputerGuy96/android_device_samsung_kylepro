@@ -35,7 +35,7 @@ else
 endif
 TARGET_KERNEL_SOURCE                        := kernel/samsung/kyleproxx
 TARGET_KERNEL_CUSTOM_TOOLCHAIN              := arm-eabi-4.6
-TARGET_PREBUILT_KERNEL                      := device/samsung/kylepro/kernel
+
 # Extended filesystem support
 TARGET_KERNEL_HAVE_EXFAT                    := true
 TARGET_KERNEL_HAVE_NTFS                     := true
