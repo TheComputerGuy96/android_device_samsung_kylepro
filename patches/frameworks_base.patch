@@ -1,0 +1,109 @@
+From 03a6e30d2d16bdf6577e2dd92c747ce44dc23468 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 14:50:29 +0700
+Subject: [PATCH 2/3] Camera: HACK: i9082: API hacks
+
+CTS 5.0 requires the presence of an auto mode, so applications
+may try to use auto without checking.
+
+Also change ENODEV to MAX_CAMERAS_IN_USE to please the CTS
+
+Change-Id: I929feffa4f79c69e9d7be7d1acacb3c228280bfe
+---
+ core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java | 2 +-
+ core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java  | 2 +-
+ core/java/android/hardware/camera2/utils/CameraBinderDecorator.java | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+index 8bdd42a..5898eac 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyMetadataMapper.java
+@@ -1149,7 +1149,7 @@ public class LegacyMetadataMapper {
+                 return CONTROL_AE_ANTIBANDING_MODE_OFF;
+             }
+             case Camera.Parameters.ANTIBANDING_50HZ: {
+-                return CONTROL_AE_ANTIBANDING_MODE_50HZ;
++                return /* CONTROL_AE_ANTIBANDING_MODE_50HZ */ CONTROL_AE_ANTIBANDING_MODE_AUTO;
+             }
+             case Camera.Parameters.ANTIBANDING_60HZ: {
+                 return CONTROL_AE_ANTIBANDING_MODE_60HZ;
+diff --git a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+index 6a44ac5..a427b9d 100644
+--- a/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
++++ b/core/java/android/hardware/camera2/legacy/LegacyRequestMapper.java
+@@ -618,7 +618,7 @@ public class LegacyRequestMapper {
+                 return Parameters.ANTIBANDING_60HZ;
+             }
+             case CONTROL_AE_ANTIBANDING_MODE_AUTO: {
+-                return Parameters.ANTIBANDING_AUTO;
++                return Parameters.ANTIBANDING_50HZ /* Parameters.ANTIBANDING_AUTO */;
+             }
+             default: {
+                 return null;
+diff --git a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+index 1aee794..e7c5313 100644
+--- a/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
++++ b/core/java/android/hardware/camera2/utils/CameraBinderDecorator.java
+@@ -124,7 +124,7 @@ public class CameraBinderDecorator {
+             case EUSERS:
+                 throw new CameraRuntimeException(MAX_CAMERAS_IN_USE);
+             case ENODEV:
+-                throw new CameraRuntimeException(CAMERA_DISCONNECTED);
++                throw new CameraRuntimeException(/*CAMERA_DISCONNECTED*/ MAX_CAMERAS_IN_USE);
+             case EOPNOTSUPP:
+                 throw new CameraRuntimeException(CAMERA_DEPRECATED_HAL);
+             case INVALID_OPERATION:
+-- 
+2.6.4
+
+
+From 5a943ff46caba2521a40456c3cf69f3d0c25f613 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 14 Mar 2015 22:53:50 +0700
+Subject: [PATCH 3/3] PowerManagerService: only turn on button light when any
+ button is pressed
+
+This more closely emulates stock Samsung behavior
+
+Change-Id: I6b15c45b713bcbc290a1026805c46109060f9990
+---
+ .../core/java/com/android/server/power/PowerManagerService.java   | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/power/PowerManagerService.java b/services/core/java/com/android/server/power/PowerManagerService.java
+index 76d4a27..ee1d742 100644
+--- a/services/core/java/com/android/server/power/PowerManagerService.java
++++ b/services/core/java/com/android/server/power/PowerManagerService.java
+@@ -244,6 +244,7 @@ public final class PowerManagerService extends SystemService
+     // Timestamp of the last call to user activity.
+     private long mLastUserActivityTime;
+     private long mLastUserActivityTimeNoChangeLights;
++    private long mLastButtonActivityTime;
+ 
+     // Timestamp of last interactive power hint.
+     private long mLastInteractivePowerHintTime;
+@@ -1165,6 +1166,11 @@ public final class PowerManagerService extends SystemService
+                     return true;
+                 }
+             } else {
++                if (eventTime > mLastButtonActivityTime && (event & PowerManager.USER_ACTIVITY_EVENT_BUTTON) != 0) {
++                    mLastButtonActivityTime = eventTime;
++                    mDirty |= DIRTY_USER_ACTIVITY;
++                }
++
+                 if (eventTime > mLastUserActivityTime) {
+                     mLastUserActivityTime = eventTime;
+                     mDirty |= DIRTY_USER_ACTIVITY;
+@@ -1677,7 +1683,7 @@ public final class PowerManagerService extends SystemService
+                             mKeyboardLight.setBrightness(mKeyboardVisible ?
+                                     keyboardBrightness : 0);
+                             if (mButtonTimeout != 0
+-                                    && now > mLastUserActivityTime + mButtonTimeout) {
++                                    && now > mLastButtonActivityTime + mButtonTimeout) {
+                                 mButtonsLight.setBrightness(0);
+                             } else {
+                                 if (!mProximityPositive) {
+-- 
+2.6.4
+
