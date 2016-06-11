@@ -144,7 +144,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 include frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk
 
 # Texture config.
-include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
+include frameworks/native/build/phone-xxhdpi-3072-hwui-memory.mk
 
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
