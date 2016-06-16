@@ -1614,3 +1614,25 @@ index 94eacc2..f8e5e63 100644
  # map recovery.fstab's fs_types to mount/format "partition types"
  PARTITION_TYPES = {
      "yaffs2": "MTD",
+From 0f856471ece315278ead5550ec293d5243996da3 Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Thu, 16 Jun 2016 20:39:26 +0300
+Subject: [PATCH] Fix derp
+
+---
+ tools/releasetools/common.py | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index f8e5e63..8907f69 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1206,8 +1206,6 @@ def __init__(self, partition, tgt, src=None, check_first_block=False,
+   def WriteScript(self, script, output_zip, progress=None):
+       # write the output unconditionally
+       script.Print("Patching %s image unconditionally..." % (self.partition,))
+-
+-  if progress:
+       script.ShowProgress(progress, 0)
+       self._WriteUpdate(script, output_zip)
+ 
