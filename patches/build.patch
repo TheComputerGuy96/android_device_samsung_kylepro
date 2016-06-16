@@ -1,7 +1,7 @@
-From 3135bbc9decee46bbfafd538abe58684a03f9065 Mon Sep 17 00:00:00 2001
+From ced1da112cc1126c9e88e41f5279831018a8a63a Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
-Subject: [PATCH 01/19] add support for overriding build.prop settings.
+Subject: [PATCH 01/21] add support for overriding build.prop settings.
 
 Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
 ---
@@ -35,7 +35,7 @@ index e97cba4..258a399 100644
      PRODUCT_MODEL \
      PRODUCT_LOCALES \
 diff --git a/core/product_config.mk b/core/product_config.mk
-index 94449c2..c7977d2 100644
+index 5240ae7..a87d0c6 100644
 --- a/core/product_config.mk
 +++ b/core/product_config.mk
 @@ -343,6 +343,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
@@ -49,13 +49,13 @@ index 94449c2..c7977d2 100644
  PRODUCT_PACKAGE_OVERLAYS := \
      $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_PACKAGE_OVERLAYS))
 -- 
-2.7.3
+2.8.4
 
 
-From b0faf0c9c57fe4b5167d3e32742637a5b17cb01c Mon Sep 17 00:00:00 2001
+From 4494ab43aaeb552dd7849f706660647abfe50cc1 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 11 Apr 2012 11:21:23 +0100
-Subject: [PATCH 02/19] build: Inline kernel building as a buildtime task
+Subject: [PATCH 02/21] build: Inline kernel building as a buildtime task
 
 Kernel image integration is now done in the build system. The
 "one true way" of doing this is to download the kernel source
@@ -449,13 +449,13 @@ index 0000000..0130a39
 +ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
 +endif
 -- 
-2.7.3
+2.8.4
 
 
-From c27f34a0debdc5c6c1422c5c4f22e1e350156370 Mon Sep 17 00:00:00 2001
+From e7aff01c462a6ca81428fabdbcb9a36cd71f3295 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Sun, 9 Nov 2014 17:27:51 +0530
-Subject: [PATCH 03/19] Allow specifying kernel toolchain and prefix
+Subject: [PATCH 03/21] Allow specifying kernel toolchain and prefix
 
 Change-Id: Ib75cfe772e073f2196455f3e3dfba247f6b3feff
 ---
@@ -497,13 +497,13 @@ index 0130a39..d61902c 100644
  endif
  
 -- 
-2.7.3
+2.8.4
 
 
-From 5b4109dbb71b6e6f1ad5595627cd5f00f6bd8d1f Mon Sep 17 00:00:00 2001
+From 8be22a4f4ef719c6958ea5695b18c83126bd8070 Mon Sep 17 00:00:00 2001
 From: Alvin Francis <nivlafx@gmail.com>
 Date: Mon, 1 Dec 2014 13:13:40 -0400
-Subject: [PATCH 04/19] Fix libelf path
+Subject: [PATCH 04/21] Fix libelf path
 
 Fixes kernel build
 
@@ -527,13 +527,13 @@ index d61902c..cbf7dc2 100644
  
  ifeq ($(TARGET_KERNEL_MODULES),)
 -- 
-2.7.3
+2.8.4
 
 
-From d613c0560bb8617be5150e719142693072dd0d8c Mon Sep 17 00:00:00 2001
+From 7101b69ddf7f8682f552e00d9823f06f1d4f07fa Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Wed, 24 Dec 2014 03:18:54 -0800
-Subject: [PATCH 05/19] core: More flexible kernel configuration
+Subject: [PATCH 05/21] core: More flexible kernel configuration
 
  * Allow various combinations of kernel vs. userspace architectures
  * Get rid of various assumptions about everything being ARM or 32-bit
@@ -741,13 +741,13 @@ index cbf7dc2..9f40eec 100644
  endif # FULL_KERNEL_BUILD
  
 -- 
-2.7.3
+2.8.4
 
 
-From 67b66797701e49fda980090be5c77c1a64e521b6 Mon Sep 17 00:00:00 2001
+From 12bb63643b6262972cc8a2df33a27d096fc17fb0 Mon Sep 17 00:00:00 2001
 From: dhacker29 <dhackerdvm@gmail.com>
 Date: Sun, 18 Jan 2015 19:34:14 -0500
-Subject: [PATCH 06/19] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
+Subject: [PATCH 06/21] Fix kernel.mk if SELINUX or VARIANT_DEFCONFIG is
  defined
 
 KERNEL_HEADER_DEFCONFIG was ignoring SELINUX_DEFCONFIG thus breaking
@@ -778,13 +778,13 @@ index 9f40eec..a2eb21e 100644
  			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
  			echo $(KERNEL_CONFIG_OVERRIDE) >> $(KERNEL_OUT)/.config; \
 -- 
-2.7.3
+2.8.4
 
 
-From 2c7cfcc29f54226dbf66d85f3cc4882fd30c09df Mon Sep 17 00:00:00 2001
+From 45038324b0af4781ec694d94d3cd4dfc75b58455 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <ricardo@cyngn.com>
 Date: Tue, 20 Jan 2015 01:41:19 +0000
-Subject: [PATCH 07/19] build: kernel: Fix stray "@"
+Subject: [PATCH 07/21] build: kernel: Fix stray "@"
 
 Nested "$(hide)"s (makefile @) don't work. There was one at the
 beginning of the script, remove the inner one to prevent it from
@@ -815,13 +815,13 @@ index a2eb21e..2c49271 100644
  	$(hide) if [ ! -z "$(KERNEL_CONFIG_OVERRIDE)" ]; then \
  			echo "Overriding kernel config with '$(KERNEL_CONFIG_OVERRIDE)'"; \
 -- 
-2.7.3
+2.8.4
 
 
-From a8400ba258158b1c1950111716936d38fc3b4018 Mon Sep 17 00:00:00 2001
+From c6c9cea9bb595affec66ac7507bb2a085a049554 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <steve@cyngn.com>
 Date: Mon, 9 Mar 2015 15:07:08 +0000
-Subject: [PATCH 08/19] build: Add support for additional kernel config snippet
+Subject: [PATCH 08/21] build: Add support for additional kernel config snippet
 
  * Add support for TARGET_KERNEL_ADDITIONAL_CONFIG which will append a
    config snippet from arch/$ARCH/configs/ to the main defconfig.
@@ -870,13 +870,13 @@ index 2c49271..764532c 100644
  kerneltags: $(KERNEL_OUT) $(KERNEL_CONFIG)
  	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) tags
 -- 
-2.7.3
+2.8.4
 
 
-From 41306711b1b8431fb9c0e50fefef02a74befa81a Mon Sep 17 00:00:00 2001
+From 99adec93676613656d5d9acd1f53e29b4f58aac8 Mon Sep 17 00:00:00 2001
 From: Michael Bestas <mikeioannina@gmail.com>
 Date: Mon, 11 May 2015 02:57:35 +0300
-Subject: [PATCH 09/19] kernel: Fix kernelconfig build
+Subject: [PATCH 09/21] kernel: Fix kernelconfig build
 
 * Copy the generated defconfig to the correct directory
 
@@ -899,13 +899,13 @@ index 764532c..781d153 100644
  endif # FULL_KERNEL_BUILD
  
 -- 
-2.7.3
+2.8.4
 
 
-From c6768b58f1e743788ef88f7e86230bdecb285d80 Mon Sep 17 00:00:00 2001
+From 105aa0e390b83a487f31695bb6f2e34b56aee020 Mon Sep 17 00:00:00 2001
 From: Alvin Francis <nivlafx@gmail.com>
 Date: Mon, 1 Dec 2014 13:13:40 -0400
-Subject: [PATCH 10/19] Fix libelf path for mm
+Subject: [PATCH 10/21] Fix libelf path for mm
 
 Fixes kernel build on darwin
 
@@ -931,13 +931,13 @@ index 781d153..1b3ad64 100644
  
  ifeq ($(TARGET_KERNEL_MODULES),)
 -- 
-2.7.3
+2.8.4
 
 
-From 25274c3797e9c8518bd00024657a5118a31443b9 Mon Sep 17 00:00:00 2001
+From 8e3c8703a5ea4983c245699e9d002ef5c42cf5dd Mon Sep 17 00:00:00 2001
 From: Cristoforo Cataldo <cristoforo.cataldo@gmail.com>
 Date: Sun, 30 Nov 2014 06:12:35 +0100
-Subject: [PATCH 11/19] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
+Subject: [PATCH 11/21] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
  variant
 
 Change-Id: I9294a518bcdc21ccbae72eadd9f3c1a12982d028
@@ -973,13 +973,13 @@ index 99f17aa..fb3a6a4 100644
  arch_variant_cflags += \
      -mfloat-abi=softfp \
 -- 
-2.7.3
+2.8.4
 
 
-From 75016b3097b3a5c4df3f458ff03d4529c9f94be9 Mon Sep 17 00:00:00 2001
+From 4a218219646130897e26e9e3e16a6956edff57b4 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 16 Nov 2011 23:14:27 +0000
-Subject: [PATCH 12/19] ota: Remove cruft we don't care about
+Subject: [PATCH 12/21] ota: Remove cruft we don't care about
 
 Skip the date check (downgrade to your content), and don't include
 recovery in otapackages.
@@ -1008,13 +1008,13 @@ index c5c16b4..d4cec87 100755
    AppendAssertions(script, OPTIONS.info_dict, oem_dict)
    device_specific.FullOTA_Assertions()
 -- 
-2.7.3
+2.8.4
 
 
-From 8e58c4b27d3934f79b6b212cebbbb7473d2749a5 Mon Sep 17 00:00:00 2001
+From 74aa5d1de1210de9317c4bbd6329c7eaa7a5bbcd Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
-Subject: [PATCH 13/19] envsetup: set OUT_DIR to an absolute path always
+Subject: [PATCH 13/21] envsetup: set OUT_DIR to an absolute path always
 
 OUT_DIR was set to $(TOPDIR)out previously,
 but $(TOPDIR) was null, so it was a relative path.
@@ -1050,13 +1050,13 @@ index bf04455..5f43cf9 100644
  endif
  endif
 -- 
-2.7.3
+2.8.4
 
 
-From dd313f5d4251a35e834040117d5f12ac5880899f Mon Sep 17 00:00:00 2001
+From 739a704d8fb6abfe5a33383635ed9e1743a9214d Mon Sep 17 00:00:00 2001
 From: David Ferguson <ferguson.david@gmail.com>
 Date: Thu, 4 Oct 2012 10:15:58 -0400
-Subject: [PATCH 14/19] build: work around missing readlink -f on Mac
+Subject: [PATCH 14/21] build: work around missing readlink -f on Mac
 
 Change-Id: I5d56366cf33a2b02f1886c87815d00cff279779d
 ---
@@ -1077,13 +1077,13 @@ index 5f43cf9..eb19f4f 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.7.3
+2.8.4
 
 
-From 1638f9f68dd5eba2fe0c3c543a355af161cb223a Mon Sep 17 00:00:00 2001
+From acb32f4d08b6398352f01d16d326d57006536c50 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <cdesai@cyanogenmod.org>
 Date: Wed, 1 May 2013 15:48:08 +0530
-Subject: [PATCH 15/19] envsetup: use $(CURDIR) for getting current directory
+Subject: [PATCH 15/21] envsetup: use $(CURDIR) for getting current directory
 
 Change-Id: I5f00faf64ec31d86dd2e48ec038748ce8499380b
 ---
@@ -1104,13 +1104,13 @@ index eb19f4f..08524b3 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.7.3
+2.8.4
 
 
-From 2bdbb485e0af0b383ec733eb926c6945662ef410 Mon Sep 17 00:00:00 2001
+From 3a9124e3e8dd845f69926cfca6586c27e6846f98 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
-Subject: [PATCH 16/19] Allow a device to generically define its own headers
+Subject: [PATCH 16/21] Allow a device to generically define its own headers
 
 We have a few cases of devices including specific versions of projects
 just because of modified headers (msm_mdp.h comes to mind), and I just
@@ -1157,13 +1157,13 @@ index b8003d7..dfc53c7 100644
  
  ifndef LOCAL_SDK_VERSION
 -- 
-2.7.3
+2.8.4
 
 
-From f99ad8a57a4f28a9a068f074f8f6624038dbdc86 Mon Sep 17 00:00:00 2001
+From 4e0e89911ba6f05c2322c3ca0d0b0b636e0b1880 Mon Sep 17 00:00:00 2001
 From: Brandon McAnsh <brandon.mcansh@gmail.com>
 Date: Sat, 10 Oct 2015 10:20:38 -0400
-Subject: [PATCH 17/19] Set kernel gcc version to 4.8 for ARM targets
+Subject: [PATCH 17/21] Set kernel gcc version to 4.8 for ARM targets
 
 * This causes the check during path setup for an arm-eabi-4.9 toolchain to fail,
       thus only leaving the arm-linux-androideabi- to exist.
@@ -1214,13 +1214,13 @@ index 6ad3a9e..9596dd6 100644
                   export ARM_EABI_TOOLCHAIN="$gccprebuiltdir/$toolchaindir"
                   ANDROID_KERNEL_TOOLCHAIN_PATH="$ARM_EABI_TOOLCHAIN":
 -- 
-2.7.3
+2.8.4
 
 
-From 80fd507ed808b25b4f7f9830e1ad1ed3105ca56b Mon Sep 17 00:00:00 2001
+From 72b69d8f741d3f59be3dae6e833bce1418c4bcad Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Wed, 21 Apr 2010 11:39:48 -0400
-Subject: [PATCH 18/19] Allow override of device asserts, including
+Subject: [PATCH 18/21] Allow override of device asserts, including
  multi-device support.
 
 Set in board file with TARGET_OTA_ASSERT_DEVICE.
@@ -1339,13 +1339,13 @@ index d4cec87..a813c41 100755
                               ], extra_option_handler=option_handler)
  
 -- 
-2.7.3
+2.8.4
 
 
-From f6900807d2c0c38205f47d6d19c6a98d261ba894 Mon Sep 17 00:00:00 2001
+From c81b0d5066e383e96e34a81eb1859e10634871e5 Mon Sep 17 00:00:00 2001
 From: "Brint E. Kriebel" <bekit@cyngn.com>
 Date: Wed, 22 Jan 2014 15:51:46 -0800
-Subject: [PATCH 19/19] Store the value from TARGET_OTA_ASSERT_DEVICE to a file
+Subject: [PATCH 19/21] Store the value from TARGET_OTA_ASSERT_DEVICE to a file
 
 This is needed so it can be read in when re-signing a package to
 allow for the proper device asserts.
@@ -1368,7 +1368,81 @@ index a895cb2..edc89ea 100644
  	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
  	   ./build/tools/releasetools/ota_from_target_files -v \
 -- 
-2.7.3
+2.8.4
+
+
+From 444d2cf47758ac7254d1d9a852afde4dd71551a0 Mon Sep 17 00:00:00 2001
+From: Matt Mower <mowerm@gmail.com>
+Date: Thu, 29 Oct 2015 22:45:52 -0400
+Subject: [PATCH 20/21] build: Ensure /system unmounted at install start
+
+Account for the possibility that a user has mounted system manually
+before installing the FullOTA package.
+---
+ tools/releasetools/ota_from_target_files.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
+index a813c41..886b4f1 100755
+--- a/tools/releasetools/ota_from_target_files.py
++++ b/tools/releasetools/ota_from_target_files.py
+@@ -591,6 +591,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   script.Print("Target: %s" % CalculateFingerprint(
+       oem_props, oem_dict, OPTIONS.info_dict))
+ 
++  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
+   device_specific.FullOTA_InstallBegin()
+ 
+   system_progress = 0.75
+-- 
+2.8.4
+
+
+From f54c4ab55f088ebfd0e642ca44dcb003e3adfd06 Mon Sep 17 00:00:00 2001
+From: Alistair Strachan <alistair.strachan@imgtec.com>
+Date: Thu, 5 May 2016 16:29:08 -0700
+Subject: [PATCH 21/21] Avoid accidentally using the host's native 'as'
+ command.
+
+When invoking clang for the host to assemble .S files, the -B flag
+would not be provided, which allowed the host prebuilt clang to
+use an 'as' from the native environment. Most of the time this
+"just works", but some newer 'as' versions cause problems with
+the older prebuilt toolchain, for example by generating
+unsupported relocation types.
+
+To avoid this problem, simply use the -B flag to tell clang to
+invoke the assembler from the correct prebuilt gcc prefix.
+
+Change-Id: I18ea4f37ae637b652cfd7321c41929f8be075342
+Signed-off-by: Alistair Strachan <alistair.strachan@imgtec.com>
+---
+ core/clang/HOST_x86_common.mk | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/core/clang/HOST_x86_common.mk b/core/clang/HOST_x86_common.mk
+index 74b5a69..7b3d6b5 100644
+--- a/core/clang/HOST_x86_common.mk
++++ b/core/clang/HOST_x86_common.mk
+@@ -11,7 +11,8 @@ endif
+ ifeq ($(HOST_OS),linux)
+ CLANG_CONFIG_x86_LINUX_HOST_EXTRA_ASFLAGS := \
+   --gcc-toolchain=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG) \
+-  --sysroot=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/sysroot
++  --sysroot=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/sysroot \
++  -B$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/x86_64-linux/bin
+ 
+ CLANG_CONFIG_x86_LINUX_HOST_EXTRA_CFLAGS := \
+   --gcc-toolchain=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)
+@@ -51,4 +52,4 @@ endif  # Linux
+ 
+ ifeq ($(HOST_OS),windows)
+ # nothing required here yet
+-endif
++endif
+\ No newline at end of file
+-- 
+2.8.4
 
 From fa74e4f85e57da57c50531675fc09dc915c8a5a9 Mon Sep 17 00:00:00 2001
 From: TheComputerGuy96 <vwestlife20@gmail.com>
@@ -1397,36 +1471,41 @@ index 1b3ad64..722acca 100644
  
  define mv-modules
 
-From 194c7e73d971942a47de95c226770be55fe8f2ad Mon Sep 17 00:00:00 2001
+From c8d5ce9c515203186345a380ba2afa55f62d0e6d Mon Sep 17 00:00:00 2001
 From: DodoGTA GT <vwestlife20@gmail.com>
-Date: Thu, 2 Jun 2016 08:56:41 +0300
-Subject: [PATCH] Remove system image verification
+Date: Thu, 16 Jun 2016 13:23:29 +0300
+Subject: [PATCH] Remove system image verification (3rd try)
 
 ---
- tools/releasetools/common.py | 62 +--------------------------------------------------------------
- 1 file changed, 62 deletions(-)
+ tools/releasetools/common.py | 106 +++-----------------------------------------------------------
+ 1 file changed, 4 insertions(+), 102 deletions(-)
 
 diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
-index 94eacc2..52d09b0 100644
+index 94eacc2..f8e5e63 100644
 --- a/tools/releasetools/common.py
 +++ b/tools/releasetools/common.py
-@@ -1207,34 +1207,11 @@ def WriteScript(self, script, output_zip, progress=None):
-     if not self.src:
+@@ -1204,84 +1204,20 @@ def __init__(self, partition, tgt, src=None, check_first_block=False,
+                                         OPTIONS.source_info_dict)
+ 
+   def WriteScript(self, script, output_zip, progress=None):
+-    if not self.src:
        # write the output unconditionally
        script.Print("Patching %s image unconditionally..." % (self.partition,))
 -    else:
 -      script.Print("Patching %s image after verification." % (self.partition,))
  
-     if progress:
+-    if progress:
++  if progress:
        script.ShowProgress(progress, 0)
-     self._WriteUpdate(script, output_zip)
+-    self._WriteUpdate(script, output_zip)
 -    self._WritePostInstallVerifyScript(script)
--
--  def WriteVerifyScript(self, script):
--    partition = self.partition
--    if not self.src:
--      script.Print("Image %s will be patched unconditionally." % (partition,))
--    else:
++      self._WriteUpdate(script, output_zip)
+ 
+   def WriteVerifyScript(self, script):
+     partition = self.partition
+     if not self.src:
+       script.Print("Image %s will be patched unconditionally." % (partition,))
+     else:
 -      ranges = self.src.care_map.subtract(self.src.clobbered_blocks)
 -      ranges_str = ranges.to_string_raw()
 -      if self.version >= 3:
@@ -1441,14 +1520,16 @@ index 94eacc2..52d09b0 100644
 -                           self.device, ranges_str, self.src.TotalSha1()))
 -      script.Print('Verified %s image...' % (partition,))
 -      script.AppendExtra('else')
-
-       # When generating incrementals for the system and vendor partitions,
-       # explicitly check the first block (which contains the superblock) of
-       # the partition to see if it's what we expect. If this check fails,
-@@ -1244,45 +1221,6 @@ def WriteVerifyScript(self, script):
-       if self.check_first_block:
-         self._CheckFirstBlock(script)
- 
+-
+-      # When generating incrementals for the system and vendor partitions,
+-      # explicitly check the first block (which contains the superblock) of
+-      # the partition to see if it's what we expect. If this check fails,
+-      # give an explicit log message about the partition having been
+-      # remounted R/W (the most likely explanation) and the need to flash to
+-      # get OTAs working again.
+-      if self.check_first_block:
+-        self._CheckFirstBlock(script)
+-
 -      # Abort the OTA update. Note that the incremental OTA cannot be applied
 -      # even if it may match the checksum of the target partition.
 -      # a) If version < 3, operations like move and erase will make changes
@@ -1487,7 +1568,49 @@ index 94eacc2..52d09b0 100644
 -        'else\n'
 -        '  abort("%s partition has unexpected contents after OTA update");\n'
 -        'endif;' % (partition,))
--
++        script.AppendExtra(('package_extract_file("%s.transfer.list"), '
++                            '"%s.new.dat", "%s.patch.dat"'))
+ 
    def _WriteUpdate(self, script, output_zip):
      ZipWrite(output_zip,
-              '{}.transfer.list'.format(self.path),
+@@ -1301,40 +1237,6 @@ def _WriteUpdate(self, script, output_zip):
+                 device=self.device, partition=self.partition))
+     script.AppendExtra(script.WordWrap(call))
+ 
+-  def _HashBlocks(self, source, ranges): # pylint: disable=no-self-use
+-    data = source.ReadRangeSet(ranges)
+-    ctx = sha1()
+-
+-    for p in data:
+-      ctx.update(p)
+-
+-    return ctx.hexdigest()
+-
+-  def _HashZeroBlocks(self, num_blocks): # pylint: disable=no-self-use
+-    """Return the hash value for all zero blocks."""
+-    zero_block = '\x00' * 4096
+-    ctx = sha1()
+-    for _ in range(num_blocks):
+-      ctx.update(zero_block)
+-
+-    return ctx.hexdigest()
+-
+-  # TODO(tbao): Due to http://b/20939131, block 0 may be changed without
+-  # remounting R/W. Will change the checking to a finer-grained way to
+-  # mask off those bits.
+-  def _CheckFirstBlock(self, script):
+-    r = rangelib.RangeSet((0, 1))
+-    srchash = self._HashBlocks(self.src, r)
+-
+-    script.AppendExtra(('(range_sha1("%s", "%s") == "%s") || '
+-                        'abort("%s has been remounted R/W; '
+-                        'reflash device to reenable OTA updates");')
+-                       % (self.device, r.to_string_raw(), srchash,
+-                          self.device))
+-
+-DataImage = blockimgdiff.DataImage
+-
+-
+ # map recovery.fstab's fs_types to mount/format "partition types"
+ PARTITION_TYPES = {
+     "yaffs2": "MTD",
