@@ -1636,3 +1636,39 @@ index f8e5e63..8907f69 100644
        script.ShowProgress(progress, 0)
        self._WriteUpdate(script, output_zip)
  
+From 5655db559c0f3aed49adc24474c0fdab53f7903f Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Mon, 20 Jun 2016 12:27:39 +0300
+Subject: [PATCH] Fix derp (2nd try)
+
+---
+ tools/releasetools/common.py | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 8907f69..29d7b08 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1203,9 +1203,12 @@ def __init__(self, partition, tgt, src=None, check_first_block=False,
+       _, self.device = GetTypeAndDevice("/" + partition,
+                                         OPTIONS.source_info_dict)
+ 
+-  def WriteScript(self, script, output_zip, progress=None):
++  def WriteScript(self, script, output_zip):
+       # write the output unconditionally
+       script.Print("Patching %s image unconditionally..." % (self.partition,))
++      progress = None
++
++  if progress:
+       script.ShowProgress(progress, 0)
+       self._WriteUpdate(script, output_zip)
+ 
+@@ -1214,7 +1217,7 @@ def WriteVerifyScript(self, script):
+     if not self.src:
+       script.Print("Image %s will be patched unconditionally." % (partition,))
+     else:
+-        script.AppendExtra(('package_extract_file("%s.transfer.list"), '
++      script.AppendExtra(('package_extract_file("%s.transfer.list"), '
+                             '"%s.new.dat", "%s.patch.dat"'))
+ 
+   def _WriteUpdate(self, script, output_zip):
