@@ -1696,3 +1696,35 @@ index 29d7b08..fc20b0e 100644
        script.ShowProgress(progress, 0)
        self._WriteUpdate(script, output_zip)
  
+From 733ed22871d92e9f217de11a4f38d44244c47a6f Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Thu, 23 Jun 2016 20:42:19 +0300
+Subject: [PATCH] Fix derp (4th try)
+
+---
+ tools/releasetools/common.py | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index fc20b0e..47b8cda 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1209,15 +1209,12 @@ def WriteScript(self, script, output_zip):
+   def progress():
+       progress = None
+       script.ShowProgress(progress, 0)
+-      self._WriteUpdate(script, output_zip)
++
++  self._WriteUpdate(script, output_zip)
+ 
+   def WriteVerifyScript(self, script):
+     partition = self.partition
+-    if not self.src:
+-      script.Print("Image %s will be patched unconditionally." % (partition,))
+-    else:
+-      script.AppendExtra(('package_extract_file("%s.transfer.list"), '
+-                            '"%s.new.dat", "%s.patch.dat"'))
++    script.Print("Image %s will be patched unconditionally." % (partition,))
+ 
+   def _WriteUpdate(self, script, output_zip):
+     ZipWrite(output_zip,
