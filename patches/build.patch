@@ -1728,3 +1728,56 @@ index fc20b0e..47b8cda 100644
  
    def _WriteUpdate(self, script, output_zip):
      ZipWrite(output_zip,
+From 57b7fd4ed03b44cf37b6a4dae03a295b398e96d2 Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Thu, 23 Jun 2016 21:54:07 +0300
+Subject: [PATCH] Fix derp (5th try)
+
+---
+ tools/releasetools/common.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 47b8cda..9848046 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1210,8 +1210,6 @@ def progress():
+       progress = None
+       script.ShowProgress(progress, 0)
+ 
+-  self._WriteUpdate(script, output_zip)
+-
+   def WriteVerifyScript(self, script):
+     partition = self.partition
+     script.Print("Image %s will be patched unconditionally." % (partition,))
+@@ -1244,6 +1242,8 @@ def _WriteUpdate(self, script, output_zip):
+     "squashfs": "EMMC"
+ }
+ 
++  WriteUpdate(script, output_zip)
++
+ def GetTypeAndDevice(mount_point, info):
+   fstab = info["fstab"]
+   if fstab:
+From 55ea56de13e8f918f77d7bde42a97c9b3e799876 Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Thu, 23 Jun 2016 21:57:42 +0300
+Subject: [PATCH] Fix derp (6th try)
+
+---
+ tools/releasetools/common.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 9848046..97a4f7c 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1242,7 +1242,7 @@ def _WriteUpdate(self, script, output_zip):
+     "squashfs": "EMMC"
+ }
+ 
+-  WriteUpdate(script, output_zip)
++WriteUpdate(script, output_zip)
+ 
+ def GetTypeAndDevice(mount_point, info):
+   fstab = info["fstab"]
