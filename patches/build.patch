@@ -1781,3 +1781,25 @@ index 9848046..97a4f7c 100644
  
  def GetTypeAndDevice(mount_point, info):
    fstab = info["fstab"]
+From 39f0822732fbf623322064dc92159e1463492eba Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Fri, 24 Jun 2016 07:45:32 +0300
+Subject: [PATCH] Fix derp (7th try)
+
+---
+ tools/releasetools/common.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index 97a4f7c..8e22f69 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1242,7 +1242,7 @@ def _WriteUpdate(self, script, output_zip):
+     "squashfs": "EMMC"
+ }
+ 
+-WriteUpdate(script, output_zip)
++self._WriteUpdate(script, output_zip)
+ 
+ def GetTypeAndDevice(mount_point, info):
+   fstab = info["fstab"]
