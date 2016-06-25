@@ -87,6 +87,9 @@ TARGET_USES_CPU_BOOST_HINT                  := true
 TARGET_SCREEN_HEIGHT                        := 800
 TARGET_SCREEN_WIDTH                         := 480
 
+# Use Clang
+USE_CLANG_PLATFORM_BUILD                    := true
+
 # Hardware rendering
 USE_OPENGL_RENDERER                         := true
 BOARD_USE_MHEAP_SCREENSHOT                  := true
