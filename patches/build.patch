@@ -1471,3 +1471,25 @@ index 1b3ad64..722acca 100644
  
  define mv-modules
 
+From f4e7a5afb27362187e12d571d180c064eb529e1b Mon Sep 17 00:00:00 2001
+From: DodoGTA GT <vwestlife20@gmail.com>
+Date: Sat, 25 Jun 2016 12:14:20 +0300
+Subject: [PATCH] Change OTA package structure
+
+---
+ core/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/Makefile b/core/Makefile
+index 07d1c94..07dc3cd 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -1549,7 +1549,7 @@ name := $(TARGET_PRODUCT)
+ ifeq ($(TARGET_BUILD_TYPE),debug)
+   name := $(name)_debug
+ endif
+-name := $(name)-ota-$(FILE_NAME_TAG)
++name := aosp-$(PLATFORM_VERSION)-$(shell date +%Y%m%d)-$(name)
+ 
+ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+ 
