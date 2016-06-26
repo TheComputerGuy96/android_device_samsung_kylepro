@@ -1,4 +1,4 @@
-# CM-13.0 Device tree for Samsung GT-S7580 (kylepro)
+# AOSP-6.0 Device tree for Samsung GT-S7580 (kylepro)
 
 ### Specs (Physically inspected):
   - CPU: Cortex-A9 (Little endian, Dual Core)
@@ -19,11 +19,11 @@
   - WIFI/Bluetooth/FM-Radio: BCM4330
 
 ### Notice:
-  - Apply patch *PATCH_CM-13.0.diff* to root directory of CM-13.0 source code before build
+  - Apply patch *AOSP 6.0 patches.diff* to root directory of the source code before building the ROM
 
-### Other resource:
+### Other resources:
   - Kernel source: https://github.com/SandPox/android_kernel_samsung_kyleproxx
-  - Vendor blobs: https://github.com/SandPox/android_vendor_samsung_kyleproxx
+  - Vendor blobs: https://github.com/TheComputerGuy96/android_vendor_samsung_kyleproxx
 
 ### More Information:
 ```sh
