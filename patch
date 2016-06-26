@@ -31,5 +31,4 @@ do
 	cd "$CURRENT_DIR"
 
 	COUNT=$(($COUNT + 1))
-patch -p1 < device/samsung/kylepro/misc/*.patch
 done
