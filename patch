@@ -5,7 +5,6 @@ CURRENT_DIR="$PWD"
 PD="device/samsung/kylepro/patches"
 PATCHES=(
 'build				build.patch'
-'frameworks/av			frameworks_av.patch'
 'frameworks/base		frameworks_base.patch'
 'frameworks/native		frameworks_native.patch'
 'frameworks/opt/net/wifi	frameworks_opt_net_wifi.patch'
