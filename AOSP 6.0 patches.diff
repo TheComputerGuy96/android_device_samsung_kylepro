@@ -1245,18 +1245,3 @@ diff -ur a/frameworks/av/media/libstagefright/OMXCodec.cpp b/frameworks/av/media
  
      parseRuntimeOption("dalvik.vm.gctype", gctypeOptsBuf, "-Xgc:");
      parseRuntimeOption("dalvik.vm.backgroundgctype", backgroundgcOptsBuf, "-XX:BackgroundGC=");
---- a/frameworks/native/libs/gui/BufferQueueProducer.cpp
-+++ b/frameworks/native/libs/gui/BufferQueueProducer.cpp
-@@ -193,7 +193,12 @@
-             const int newUndequeuedCount =
-                 maxBufferCount - (dequeuedCount + 1);
-             const int minUndequeuedCount =
-+#ifdef HAWAII_HWC
-+                // HACK: for some reason, we need to reduce min undequeue for screen recording
-+                mCore->getMinUndequeuedBufferCountLocked(false);
-+#else
-                 mCore->getMinUndequeuedBufferCountLocked(async);
-+#endif
-             if (newUndequeuedCount < minUndequeuedCount) {
-                 BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
-                         "(dequeued=%d undequeued=%d)",
