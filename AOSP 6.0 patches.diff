@@ -1245,3 +1245,4 @@ diff -ur a/frameworks/av/media/libstagefright/OMXCodec.cpp b/frameworks/av/media
  
      parseRuntimeOption("dalvik.vm.gctype", gctypeOptsBuf, "-Xgc:");
      parseRuntimeOption("dalvik.vm.backgroundgctype", backgroundgcOptsBuf, "-XX:BackgroundGC=");
+
