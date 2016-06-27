@@ -1,14 +1,3 @@
---- a/bionic/libc/arch-arm/cortex-a9/bionic/memcpy_base.S
-+++ b/bionic/libc/arch-arm/cortex-a9/bionic/memcpy_base.S
-@@ -44,7 +44,7 @@
-         /* check if buffers are aligned. If so, run arm-only version */
-         eor         r3, r0, r1
-         ands        r3, r3, #0x3
--        beq         __memcpy_base_aligned
-+        beq         MEMCPY_BASE_ALIGNED
- 
-         /* Check the upper size limit for Neon unaligned memory access in memcpy */
-         cmp         r2, #224
 diff -ur a/external/icu/icu4c/source/common/ucnv.c b/external/icu/icu4c/source/common/ucnv.c
 --- a/external/icu/icu4c/source/common/ucnv.c	2016-05-08 03:43:11.920995999 +0000
 +++ b/external/icu/icu4c/source/common/ucnv.c	2016-05-08 03:34:25.212995999 +0000
