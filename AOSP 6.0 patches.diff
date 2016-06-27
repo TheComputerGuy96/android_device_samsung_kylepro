@@ -1161,14 +1161,13 @@ diff -ur a/frameworks/av/media/libstagefright/OMXCodec.cpp b/frameworks/av/media
              }
              if (format.eColorFormat != colorFormat) {
                  CODEC_LOGE("Color format %d is not supported", colorFormat);
-@@ -1841,11 +1866,32 @@
+@@ -1841,11 +1866,31 @@
  #endif
      }
  
 +    ALOGE("PATCH:OMXCodec:allocateOutputBuffersFromNativeWindow def.format.video.eColorFormat = %i", def.format.video.eColorFormat);
 +
 +    OMX_COLOR_FORMATTYPE HalColorFormat;
-+    status_t errss;
 +    
 +    switch (def.format.video.eColorFormat) {
 +        case OMX_COLOR_FormatYCbYCr:
