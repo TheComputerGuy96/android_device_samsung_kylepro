@@ -16,6 +16,7 @@ PATCHES=(
 'packages/apps/Launcher3	packages_apps_Launcher3.patch'
 'packages/apps/Settings		packages_apps_Settings.patch'
 'packages/inputmethods/LatinIME packages_inputmethods_LatinIME.patch'
+'packages/services/Telephony	packages_services_Telephony.patch'
 'system/core			system_core.patch'
 )
 

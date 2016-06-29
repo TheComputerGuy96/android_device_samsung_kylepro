@@ -1,1 +1,1 @@
-add_lunch_combo kylepro-userdebug
+add_lunch_combo aosp_kylepro-userdebug

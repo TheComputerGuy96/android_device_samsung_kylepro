@@ -1,7 +1,7 @@
-From 685c9114867ad0552b81f8360872cb6d961dac74 Mon Sep 17 00:00:00 2001
+From 163fdb792eba4d9132b64fa95571980e670ed3a8 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Thu, 22 Nov 2012 06:02:18 +0000
-Subject: [PATCH 1/8] Allow a device to include its own RIL subclass
+Subject: [PATCH 1/9] Allow a device to include its own RIL subclass
 
 For cases where a single device needs a subclass, there's no need to
 pollute the common core with it: just stick it in the device's own
@@ -30,13 +30,13 @@ index 449faa0..d312fec 100644
  LOCAL_MODULE := telephony-common
  
 -- 
-2.8.1
+2.9.0
 
 
-From b9815a7e45ce32604a9abd519be74e969338b62e Mon Sep 17 00:00:00 2001
+From bc37d226caef0854554264b83aa705d5ec1bb9ae Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Thu, 22 Nov 2012 17:47:31 +0100
-Subject: [PATCH 2/8] RIL: Make RIL subclassable
+Subject: [PATCH 2/9] RIL: Make RIL subclassable
 
 Change-Id: I9144ef279ca9c8cb9e657a28342f0f4cb3e7debd
 
@@ -476,13 +476,13 @@ index 4ada1aa..8a85566 100644
          int num;
          SsData ssData = new SsData();
 -- 
-2.8.1
+2.9.0
 
 
-From 0cdc4fe086cd38382c3d1e7f46aa44d5110f4c99 Mon Sep 17 00:00:00 2001
+From e3103d7490c9d5e8b61d6f836a4ce39b5ad839e0 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 8 Mar 2014 19:35:17 +0700
-Subject: [PATCH 3/8] RIL: mark mInstanceId as protected
+Subject: [PATCH 3/9] RIL: mark mInstanceId as protected
 
 To use in RIL subclasses
 
@@ -505,13 +505,13 @@ index 8a85566..493d9c5 100644
      //***** Events
  
 -- 
-2.8.1
+2.9.0
 
 
-From 1548378506a4ff55e8e0808b860250a6dda7893d Mon Sep 17 00:00:00 2001
+From d65077bf700aef0e1dccff691e4cd27e40b49418 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 31 May 2014 12:34:56 +0700
-Subject: [PATCH 4/8] telephony: support for RIL that does not send
+Subject: [PATCH 4/9] telephony: support for RIL that does not send
  UNSOL_CALL_RING
 
 Samsung Broadcom RIL does not send UNSOL_CALL_RING at all, so it
@@ -524,10 +524,10 @@ Change-Id: Ib7373d32777f6c42ee488972a7aa63ae8e1cd09b
  1 file changed, 19 insertions(+)
 
 diff --git a/src/java/com/android/internal/telephony/PhoneBase.java b/src/java/com/android/internal/telephony/PhoneBase.java
-index 930d45e..fc6522e 100644
+index 9064926..693ab0d 100644
 --- a/src/java/com/android/internal/telephony/PhoneBase.java
 +++ b/src/java/com/android/internal/telephony/PhoneBase.java
-@@ -220,6 +220,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -217,6 +217,7 @@ public abstract class PhoneBase extends Handler implements Phone {
      boolean mDnsCheckDisabled;
      public DcTrackerBase mDcTracker;
      boolean mDoesRilSendMultipleCallRing;
@@ -535,7 +535,7 @@ index 930d45e..fc6522e 100644
      int mCallRingContinueToken;
      int mCallRingDelay;
      public boolean mIsTheCurrentActivePhone = true;
-@@ -449,6 +450,11 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -444,6 +445,11 @@ public abstract class PhoneBase extends Handler implements Phone {
                  TelephonyProperties.PROPERTY_RIL_SENDS_MULTIPLE_CALL_RING, true);
          Rlog.d(LOG_TAG, "mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
  
@@ -547,7 +547,7 @@ index 930d45e..fc6522e 100644
          mCallRingDelay = SystemProperties.getInt(
                  TelephonyProperties.PROPERTY_CALL_RING_DELAY, 3000);
          Rlog.d(LOG_TAG, "mCallRingDelay=" + mCallRingDelay);
-@@ -2056,6 +2062,18 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -2051,6 +2057,18 @@ public abstract class PhoneBase extends Handler implements Phone {
      public void notifyNewRingingConnectionP(Connection cn) {
          if (!mIsVoiceCapable)
              return;
@@ -566,7 +566,7 @@ index 930d45e..fc6522e 100644
          AsyncResult ar = new AsyncResult(null, cn, null);
          mNewRingingConnectionRegistrants.notifyRegistrants(ar);
      }
-@@ -2632,6 +2650,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -2612,6 +2630,7 @@ public abstract class PhoneBase extends Handler implements Phone {
          pw.println(" mDnsCheckDisabled=" + mDnsCheckDisabled);
          pw.println(" mDcTracker=" + mDcTracker);
          pw.println(" mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
@@ -575,13 +575,40 @@ index 930d45e..fc6522e 100644
          pw.println(" mCallRingDelay=" + mCallRingDelay);
          pw.println(" mIsTheCurrentActivePhone=" + mIsTheCurrentActivePhone);
 -- 
-2.8.1
+2.9.0
 
 
-From ba2d403d5908fc0c64335019f2976c8aaf795dd5 Mon Sep 17 00:00:00 2001
+From 02439d0ee58795503228ebcaf921dc1f06f8ece5 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 15 Nov 2014 17:39:50 +0700
+Subject: [PATCH 5/9] telephony: RIL: i9082: set correct rild names
+
+Change-Id: Idf8e98ae2f36f30b84be04b7b062ca4b52cebd8a
+---
+ src/java/com/android/internal/telephony/RIL.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 493d9c5..1a06585 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -281,7 +281,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
+     static final int RESPONSE_SOLICITED = 0;
+     static final int RESPONSE_UNSOLICITED = 1;
+ 
+-    static final String[] SOCKET_NAME_RIL = {"rild", "rild2", "rild3"};
++    static final String[] SOCKET_NAME_RIL = {"rild", "rild1", "rild2"};
+ 
+     static final int SOCKET_OPEN_RETRY_MILLIS = 4 * 1000;
+ 
+-- 
+2.9.0
+
+
+From 40d717e3855052efd4da95caebb82b5271ddaf49 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 17 Dec 2014 21:19:34 +0700
-Subject: [PATCH 5/8] Forward port Samsung STK support
+Subject: [PATCH 6/9] Forward port Samsung STK support
  (frameworks/opt/telephony)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -1142,13 +1169,13 @@ index 91a6fd6..d753659 100644
 +    }
  }
 -- 
-2.8.1
+2.9.0
 
 
-From d56458225e9df9d1008aeec209b81501d8eaa537 Mon Sep 17 00:00:00 2001
+From 252c919aa0057fbfce7ffc6e0132b09d20e54b1a Mon Sep 17 00:00:00 2001
 From: Mike Kasick <mike@kasick.org>
 Date: Sat, 14 Mar 2015 20:20:39 +0700
-Subject: [PATCH 6/8] RILs: Eliminate repeated overrides of
+Subject: [PATCH 7/9] RILs: Eliminate repeated overrides of
  responseOperatorInfos.
 
 - Add mQANElements field, default to 4 in RIL, use in responseOperatorInfos.
@@ -1167,7 +1194,7 @@ Change-Id: I1254a670d8611f76aad13a6f197c67012c7d4c47
  1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 493d9c5..bca1b9c 100644
+index 1a06585..dca13df 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
 @@ -269,6 +269,11 @@ public class RIL extends BaseCommands implements CommandsInterface {
@@ -1203,13 +1230,13 @@ index 493d9c5..bca1b9c 100644
                  new OperatorInfo(
                      strings[i+0],
 -- 
-2.8.1
+2.9.0
 
 
-From bcd58358f811a4abdf694daa7833c3e07c532778 Mon Sep 17 00:00:00 2001
+From a26c77de976c139feae04439723a9f3f49d5f7f5 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 22 Nov 2012 19:01:13 +0100
-Subject: [PATCH 7/8] telephony: Use reflection to create command interface
+Subject: [PATCH 8/9] telephony: Use reflection to create command interface
  (RIL class)
 
 Change-Id: Icdc02eaa74b89dbde4ddfb989cc62481d6423312
@@ -1294,13 +1321,13 @@ index 0543151..166a400 100644
          synchronized (sLockProxyPhones) {
              if (!sMadeDefaults) {
 -- 
-2.8.1
+2.9.0
 
 
-From 67c3daeae395b612073eb0f17ed70c08d07c13cf Mon Sep 17 00:00:00 2001
+From 5313a5b13b7b347bd2e83e9480f89addea953a88 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 28 Dec 2014 18:53:11 +0700
-Subject: [PATCH 8/8] UiccController: use registerForAvailable only for
+Subject: [PATCH 9/9] UiccController: use registerForAvailable only for
  persist.radio.apm_sim_not_pwdn
 
 Some QCOM RILs allow the SIM to be loaded in airplane mode, thus
@@ -1332,5 +1359,5 @@ index 4f3b58b..a8df6fb 100644
              } else {
                  mCis[i].registerForOn(this, EVENT_ICC_STATUS_CHANGED, index);
 -- 
-2.8.1
+2.9.0
 
