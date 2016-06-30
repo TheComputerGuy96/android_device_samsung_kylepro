@@ -1132,7 +1132,7 @@ index ad96716..979da10 100644
      ATRACE_CALL();
  
 +// Rotation artifact problems when useReadPixels is false
-+#ifdef CAPRI_HWC
++#ifdef HAWAII_HWC
 +    useReadPixels = true;
 +#endif
 +
@@ -1165,7 +1165,7 @@ index 0b47f75..545aa0a 100644
      sp<ISurfaceComposer> s(ComposerService::getComposerService());
      if (s == NULL) return NO_INIT;
 -#ifdef USE_MHEAP_SCREENSHOT
-+#if defined(USE_MHEAP_SCREENSHOT) && !defined(CAPRI_HWC)
++#if defined(USE_MHEAP_SCREENSHOT) && !defined(HAWAII_HWC)
      int format = 0;
      producer->query(NATIVE_WINDOW_FORMAT,&format);
      if (format == PIXEL_FORMAT_RGBA_8888) {
@@ -1191,7 +1191,7 @@ index 87e5b4d..9634db7 100644
              const int newUndequeuedCount =
                  maxBufferCount - (dequeuedCount + 1);
              const int minUndequeuedCount =
-+#ifdef CAPRI_HWC
++#ifdef HAWAII_HWC
 +                // HACK: for some reason, we need to reduce min undequeue for screen recording
 +                mCore->getMinUndequeuedBufferCountLocked(false);
 +#else
