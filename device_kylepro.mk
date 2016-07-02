@@ -63,7 +63,7 @@ PRODUCT_PACKAGES += \
     ebtables \
     ethertypes
 
-#Optimization-ART
+# Optimization-ART
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.optimize.bcm=true
 
@@ -135,6 +135,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.android.checkjni=0 \
     ro.kernel.checkjni=0 \
     dalvik.vm.checkjni=false
+
+# Aggressive Trimming
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.sys.fw.use_trim_settings=true
 
 # Dex2Oat multi-thread
 PRODUCT_PROPERTY_OVERRIDES += \
