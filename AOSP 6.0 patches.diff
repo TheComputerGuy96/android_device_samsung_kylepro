@@ -166,11 +166,6 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
          return err;
      }
  
-@@ -916,3 +938,3 @@
--            def.format.video.eColorFormat,
-+            HalColorFormat,
-             mRotationDegrees,
-             usage);
 @@ -925,6 +933,20 @@
      setNativeWindowColorFormat(eNativeColorFormat);
  #endif
@@ -192,6 +187,15 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
      ALOGV("gralloc usage: %#x(OMX) => %#x(ACodec)", omxUsage, usage);
      int32_t width = 0, height = 0;
      int32_t isAdaptivePlayback = 0;
+@@ -947,7 +969,7 @@
+ #ifdef USE_SAMSUNG_COLORFORMAT
+             eNativeColorFormat,
+ #else
+-            def.format.video.eColorFormat,
++            HalColorFormat,
+ #endif
+             mRotationDegrees,
+             usage);
 @@ -976,6 +998,7 @@
  status_t ACodec::configureOutputBuffersFromNativeWindow(
          OMX_U32 *bufferCount, OMX_U32 *bufferSize,
@@ -631,13 +635,6 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
      err = mOMX->setParameter(
              mNode, OMX_IndexParamPortDefinition, &def, sizeof(def));
  
-@@ -3912,5 +4001,6 @@
-             // FIXME: NV21 for sw-encoder, NV12 for decoder and hw-encoder
-         case OMX_COLOR_FormatYUV420PackedSemiPlanar:
-+            ALOGE("ACodec:PATCH:describeDefaultColorFormat case OMX_COLOR_FormatYUV420SemiPlanar (%i) or OMX_COLOR_FormatYUV420PackedSemiPlanar (%i) or OMX_TI_COLOR_FormatYUV420PackedSemiPlanar (%i)", OMX_COLOR_FormatYUV420SemiPlanar, OMX_COLOR_FormatYUV420PackedSemiPlanar, OMX_TI_COLOR_FormatYUV420PackedSemiPlanar);
-             // NV12
-             image.mPlane[image.U].mOffset = params.nStride * params.nSliceHeight;
-             image.mPlane[image.U].mColInc = 2;
 @@ -3962,6 +4032,7 @@
  
  // static
@@ -691,6 +688,14 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
              image.mPlane[image.U].mOffset = params.nStride * params.nSliceHeight;
              image.mPlane[image.U].mColInc = 1;
              image.mPlane[image.U].mRowInc = params.nStride / 2;
+@@ -4051,6 +4140,7 @@
+             // FIXME: NV21 for sw-encoder, NV12 for decoder and hw-encoder
+         case OMX_COLOR_FormatYUV420PackedSemiPlanar:
+         case OMX_TI_COLOR_FormatYUV420PackedSemiPlanar:
++            ALOGE("ACodec:PATCH:describeDefaultColorFormat case OMX_COLOR_FormatYUV420SemiPlanar (%i) or OMX_COLOR_FormatYUV420PackedSemiPlanar (%i) or OMX_TI_COLOR_FormatYUV420PackedSemiPlanar (%i)", OMX_COLOR_FormatYUV420SemiPlanar, OMX_COLOR_FormatYUV420PackedSemiPlanar, OMX_TI_COLOR_FormatYUV420PackedSemiPlanar);
+             // NV12
+             image.mPlane[image.U].mOffset = params.nStride * params.nSliceHeight;
+             image.mPlane[image.U].mColInc = 2;
 @@ -4076,6 +4166,7 @@
          const sp<IOMX> &omx, IOMX::node_id node,
          DescribeColorFormatParams &describeParams)
@@ -724,11 +729,6 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
          return err;
      }
  
-@@ -5687,3 +5785,4 @@
-         } else {
-+            ALOGE("ACodec:PATCH:onConfigureComponent configureCodec2 [%s]", mCodec->mComponentName.c_str());
-             err = mCodec->configureCodec(mime.c_str(), msg);
-         }
 @@ -5864,8 +5959,10 @@
      AString mime;
  
@@ -740,6 +740,14 @@ diff -ur a/frameworks/av/media/libstagefright/ACodec.cpp b/frameworks/av/media/l
          err = mCodec->configureCodec(mime.c_str(), msg);
      }
      if (err != OK) {
+@@ -5933,6 +6030,7 @@
+             observer->setNotificationMessage(notify);
+             mCodec->mComponentName = componentName;
+ 
++            ALOGE("ACodec:PATCH:onConfigureComponent configureCodec2 [%s]", mCodec->mComponentName.c_str());
+             err = mCodec->configureCodec(mime.c_str(), msg);
+         }
+ 
 @@ -6585,14 +6683,15 @@
          }
      }
@@ -893,16 +901,6 @@ diff -ur a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/me
          androidSetThreadPriority(0, ANDROID_PRIORITY_AUDIO);
      }
  
-@@ -2322,8 +2323,7 @@
-             cttsOffsetTimeUs =
-                     timestampUs + kMaxCttsOffsetTimeUs - decodingTimeUs;
-             if (WARN_UNLESS(cttsOffsetTimeUs >= 0ll, "for %s track", trackName)) {
--                copy->release();
--                return ERROR_MALFORMED;
-+                ALOGE("MPEG4Writer:PATCH:threadEntry ERROR_MALFORMED 2");
-             }
- 
-             timestampUs = decodingTimeUs;
 @@ -2370,8 +2372,7 @@
  
          timestampUs -= previousPausedDurationUs;
@@ -913,16 +911,16 @@ diff -ur a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/me
          }
  
          if (!mIsAudio) {
-@@ -2397,8 +2395,7 @@
-         if (currDurationTicks < 0ll) {
-             ALOGE("timestampUs %" PRId64 " < lastTimestampUs %" PRId64 " for %s track",
-                 timestampUs, lastTimestampUs, trackName);
--            copy->release();
--            return = UNKNOWN_ERROR;
-+            ALOGE("MPEG4Writer:PATCH:threadEntry ERROR_MALFORMED 5");
-         }
+@@ -2386,8 +2387,7 @@
+             cttsOffsetTimeUs =
+                     timestampUs - decodingTimeUs;
+             if (WARN_UNLESS(kMaxCttsOffsetTimeUs >= decodingTimeUs - timestampUs, "for %s track", trackName)) {
+-                copy->release();
+-                return ERROR_MALFORMED;
++                ALOGE("MPEG4Writer:PATCH:threadEntry ERROR_MALFORMED 2");
+             }
  
-         // if the duration is different for this sample, see if it is close enough to the previous
+             timestampUs = decodingTimeUs;
 @@ -2398,8 +2398,7 @@
              currCttsOffsetTimeTicks =
                      (cttsOffsetTimeUs * mTimeScale + 500000LL) / 1000000LL;
@@ -943,6 +941,18 @@ diff -ur a/frameworks/av/media/libstagefright/MPEG4Writer.cpp b/frameworks/av/me
          }
  
          ALOGV("%s media time stamp: %" PRId64 " and previous paused duration %" PRId64,
+@@ -2461,10 +2459,7 @@
+         if (currDurationTicks < 0ll) {
+             ALOGE("timestampUs %" PRId64 " < lastTimestampUs %" PRId64 " for %s track",
+                 timestampUs, lastTimestampUs, trackName);
+-            copy->release();
+-            err = UNKNOWN_ERROR;
+-            mSource->notifyError(err);
+-            return err;
++            ALOGE("MPEG4Writer:PATCH:threadEntry ERROR_MALFORMED 5");
+         }
+ 
+         // if the duration is different for this sample, see if it is close enough to the previous
 @@ -2562,7 +2557,7 @@
      }
  
