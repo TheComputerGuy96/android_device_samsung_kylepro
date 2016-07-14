@@ -115,7 +115,7 @@ index 5178c2a..bbddd0c 100644
      }
  
 +#ifdef HAWAII_HWC
-+    if (strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21) != 0)
++    if (strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.encoder.", 21) != 0)
 +        // Skip checking on vc4 encoder. It will return the incorrect
 +        // port index, but correct parameters.
 +#endif
@@ -364,7 +364,7 @@ index 9ec91fd..614166a 100644
 +static OMX_VIDEO_CONTROLRATETYPE getBitrateMode(const sp<AMessage> &msg, const AString &name) {
 +#ifdef HAWAII_HWC
 +    // vc4 encoder only supports VBR
-+    if (strncmp(name.c_str(), "OMX.BRCM.vc4.decoder.", 21) == 0) {
++    if (strncmp(name.c_str(), "OMX.BRCM.vc4.encoder.", 21) == 0) {
 +        return OMX_Video_ControlRateVariable;
 +    }
 +#endif
