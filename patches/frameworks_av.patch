@@ -56,7 +56,7 @@ index 6399b79..5178c2a 100644
      }
 +// Capri's OMX fail to set a reasonable default size from width and height
 +#ifdef HAWAII_HWC
-+    else if (!strncmp(mComponentName.c_str(), "OMX.brcm.video.*.*.*.decoder", 21)) {
++    else if (!strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21)) {
 +        int32_t width;
 +        int32_t height;
 +        if (msg->findInt32("width", &width) && msg->findInt32("height", &height)) {
@@ -79,7 +79,7 @@ index 47c74da..488d395 100644
      }
 +// Capri's OMX fail to set a reasonable default size from width and height
 +#ifdef HAWAII_HWC
-+    else if (!strncmp(mComponentName, "OMX.brcm.video.*.*.*.decoder", 21)) {
++    else if (!strncmp(mComponentName, "OMX.BRCM.vc4.decoder.", 21)) {
 +        int32_t width;
 +        int32_t height;
 +        if (meta->findInt32(kKeyWidth, &width) && meta->findInt32(kKeyHeight, &height)) {
@@ -115,7 +115,7 @@ index 5178c2a..bbddd0c 100644
      }
  
 +#ifdef HAWAII_HWC
-+    if (strncmp(mComponentName.c_str(), "OMX.brcm.video.*.*.*.decoder", 21) != 0)
++    if (strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21) != 0)
 +        // Skip checking on vc4 encoder. It will return the incorrect
 +        // port index, but correct parameters.
 +#endif
@@ -146,7 +146,7 @@ index bbddd0c..2e424b9 100644
 @@ -1674,13 +1674,9 @@ status_t ACodec::configureCodec(
  // Capri's OMX fail to set a reasonable default size from width and height
  #ifdef CAPRI_HWC
-     else if (!strncmp(mComponentName.c_str(), "OMX.brcm.video.*.*.*.decoder", 21)) {
+     else if (!strncmp(mComponentName.c_str(), "OMX.BRCM.vc4.decoder.", 21)) {
 -        int32_t width;
 -        int32_t height;
 -        if (msg->findInt32("width", &width) && msg->findInt32("height", &height)) {
@@ -364,7 +364,7 @@ index 9ec91fd..614166a 100644
 +static OMX_VIDEO_CONTROLRATETYPE getBitrateMode(const sp<AMessage> &msg, const AString &name) {
 +#ifdef HAWAII_HWC
 +    // vc4 encoder only supports VBR
-+    if (strncmp(name.c_str(), "OMX.brcm.video.*.*.*.decoder", 21) == 0) {
++    if (strncmp(name.c_str(), "OMX.BRCM.vc4.decoder.", 21) == 0) {
 +        return OMX_Video_ControlRateVariable;
 +    }
 +#endif
