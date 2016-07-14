@@ -1,7 +1,7 @@
-From d983bfd7cbf777ffd88ab546da82427da7d2a584 Mon Sep 17 00:00:00 2001
+From 62da526420e3ecfbdf418d412f2d2e6682dfdc47 Mon Sep 17 00:00:00 2001
 From: Zoran Jovanovic <zoran.jovanovic@sonymobile.com>
 Date: Wed, 4 Nov 2015 14:00:03 +0100
-Subject: [PATCH] Don't show MIDI USB option if not supported
+Subject: [PATCH 1/2] Don't show MIDI USB option if not supported
 
 If device doesn't support MIDI, don't show MIDI in "Use USB for" menu
 when USB cable is connected.
@@ -54,5 +54,34 @@ index 210e0a0..340eba5 100644
              int power = modeToPower(mode);
              if ((mode & MODE_DATA_MASK) != 0) {
 -- 
-2.7.3
+2.9.0
+
+
+From be3f299162f3d6266bf19bdc677dce06c1d7c349 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Thu, 9 Jan 2014 22:09:19 +0700
+Subject: [PATCH 2/2] Settings: Display correct serial number in About Phone
+
+The sticker serial number is stored in ril.serialnumber
+
+Change-Id: I3ddb096ca964c6ad50197334222d144be577987d
+---
+ src/com/android/settings/deviceinfo/Status.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/com/android/settings/deviceinfo/Status.java b/src/com/android/settings/deviceinfo/Status.java
+index b52a0ad..88ef0a6 100644
+--- a/src/com/android/settings/deviceinfo/Status.java
++++ b/src/com/android/settings/deviceinfo/Status.java
+@@ -198,7 +198,7 @@ public class Status extends InstrumentedPreferenceActivity {
+ 
+         updateConnectivity();
+ 
+-        String serial = Build.SERIAL;
++        String serial = SystemProperties.get("ril.serialnumber");
+         if (serial != null && !serial.equals("")) {
+             setSummaryText(KEY_SERIAL_NUMBER, serial);
+         } else {
+-- 
+2.9.0
 

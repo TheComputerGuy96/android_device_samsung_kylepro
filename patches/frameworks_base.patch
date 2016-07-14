@@ -1,7 +1,7 @@
-From 9b320bf03a26266a19d0e12f7d1a741265093af0 Mon Sep 17 00:00:00 2001
+From 7ce7e6120c261e0d29491a2eb09610fd5a1b9395 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:50:29 +0700
-Subject: [PATCH 1/6] TelephonyManager: set properties in Broadcom-style as
+Subject: [PATCH 1/7] TelephonyManager: set properties in Broadcom-style as
  expected by RIL
 
 For i9082
@@ -105,10 +105,10 @@ index 2e25ec7..140f18d 100644
 2.9.0
 
 
-From 1c4e8849b63479f5ca60b96de60b8f140db465e7 Mon Sep 17 00:00:00 2001
+From 40e8527817de28a12e16d55aaa63a72f068d3aca Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 22:33:16 +0700
-Subject: [PATCH 2/6] Camera: HACK: i9082: API hacks
+Subject: [PATCH 2/7] Camera: HACK: i9082: API hacks
 
 CTS 5.0 requires the presence of an auto mode, so applications
 may try to use auto without checking.
@@ -165,10 +165,10 @@ index 1aee794..e7c5313 100644
 2.9.0
 
 
-From ca2f3a3f8ea5cc2f6424066cbeb2c539c7fb07d6 Mon Sep 17 00:00:00 2001
+From d55e2495661b24c530c9b05f5fdb820eb2709c17 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:22:43 +0000
-Subject: [PATCH 3/6] Forward port Samsung STK support (frameworks/base)
+Subject: [PATCH 3/7] Forward port Samsung STK support (frameworks/base)
 
 [pawitp: port to Lollipop]
 
@@ -220,10 +220,10 @@ index 7088be8..0b99052 100644
 2.9.0
 
 
-From b856f596e241b49c4c10a230d771384cc25e1647 Mon Sep 17 00:00:00 2001
+From 9973f6b7fa9c9fdfb17ab58babaa66f6c8bb20e2 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 15 Nov 2014 14:47:35 +0700
-Subject: [PATCH 4/6] frameworks: base: add KEYCODE_HOME to wake keys
+Subject: [PATCH 4/7] frameworks: base: add KEYCODE_HOME to wake keys
 
 Change-Id: I77d70df2263dd9c75b02efde18d91585b1ad29f9
 ---
@@ -246,10 +246,10 @@ index a9bf92b..b7a42f6 100644
 2.9.0
 
 
-From 0d8c62891840edd9b32246a3292eae4427f2f205 Mon Sep 17 00:00:00 2001
+From 975390494c8d5fc8a838a2b7413772edcc35f306 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Fri, 23 Nov 2012 14:23:16 +0000
-Subject: [PATCH 5/6] Reintroduce button-backlight (and respective inactivity
+Subject: [PATCH 5/7] Reintroduce button-backlight (and respective inactivity
  timeout)
 
 The power manager rewrite from Change I1d7a52e98f0449f76d70bf421f6a7f245957d1d7
@@ -358,10 +358,10 @@ index f7a8970..95a7243 100644
 2.9.0
 
 
-From caf16688c99c5e62b7dc26fa0d1d4f8b82457347 Mon Sep 17 00:00:00 2001
+From ee8f0bb827ea2d79187f560223ef86b323666eff Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 14 Mar 2015 22:53:50 +0700
-Subject: [PATCH 6/6] PowerManagerService: only turn on button light when any
+Subject: [PATCH 6/7] PowerManagerService: only turn on button light when any
  button is pressed
 
 * Also reduce the timeout to 2 seconds
@@ -415,6 +415,61 @@ index 95a7243..54a4325 100644
                              mButtonsLight.setBrightness(0);
                          } else {
                              mButtonsLight.setBrightness(mDisplayPowerRequest.screenBrightness);
+-- 
+2.9.0
+
+
+From 71a601a5e06b42bb28807c34649761dfeae5126f Mon Sep 17 00:00:00 2001
+From: Paul Bouman <boumanpaul@gmail.com>
+Date: Sun, 11 Jan 2015 13:54:27 +0100
+Subject: [PATCH 7/7] Show Optimizing app dialog on first boot
+
+The boot dialog is currently hidden on first boot but the bootanimation
+can take a very long time to go away. Show the boot dialog so we know
+whats happening.
+
+Change-Id: I71d50eb8929edde38fcfdcccc2cb05c25777c6dd
+---
+ .../java/com/android/server/pm/PackageManagerService.java    | 12 +++++-------
+ services/java/com/android/server/SystemServer.java           |  2 +-
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index c1d091b..4abb49d 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -6177,13 +6177,11 @@ public class PackageManagerService extends IPackageManager.Stub {
+         if (DEBUG_DEXOPT) {
+             Log.i(TAG, "Optimizing app " + curr + " of " + total + ": " + pkg.packageName);
+         }
+-        if (!isFirstBoot()) {
+-            try {
+-                ActivityManagerNative.getDefault().showBootMessage(
+-                        mContext.getResources().getString(R.string.android_upgrading_apk,
+-                                curr, total), true);
+-            } catch (RemoteException e) {
+-            }
++        try {
++            ActivityManagerNative.getDefault().showBootMessage(
++                    mContext.getResources().getString(R.string.android_upgrading_apk,
++                            curr, total), true);
++        } catch (RemoteException e) {
+         }
+         PackageParser.Package p = pkg;
+         synchronized (mInstallLock) {
+diff --git a/services/java/com/android/server/SystemServer.java b/services/java/com/android/server/SystemServer.java
+index 7dd16d1..08def2d 100644
+--- a/services/java/com/android/server/SystemServer.java
++++ b/services/java/com/android/server/SystemServer.java
+@@ -499,7 +499,7 @@ public final class SystemServer {
+             Slog.i(TAG, "Window Manager");
+             wm = WindowManagerService.main(context, inputManager,
+                     mFactoryTestMode != FactoryTest.FACTORY_TEST_LOW_LEVEL,
+-                    !mFirstBoot, mOnlyCore);
++                    true, mOnlyCore);
+             ServiceManager.addService(Context.WINDOW_SERVICE, wm);
+             ServiceManager.addService(Context.INPUT_SERVICE, inputManager);
+ 
 -- 
 2.9.0
 
