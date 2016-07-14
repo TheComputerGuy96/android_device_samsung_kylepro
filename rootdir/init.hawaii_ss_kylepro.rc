@@ -152,6 +152,9 @@ on boot
 
 # RTCC Interval
     write /sys/module/lowmemorykiller/parameters/min_interval 500
+    
+# Custom LMK values
+    write /sys/module/lowmemorykiller/parameters/minfree 12288,15360,18432,21504,24576,30720
 
 # SISO-ANDR_PERF :: START Changing scheduler to noop during boot
     write /sys/block/mmcblk0/queue/scheduler noop
