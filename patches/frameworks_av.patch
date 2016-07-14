@@ -78,7 +78,7 @@ index 47c74da..488d395 100644
          setMinBufferSize(kPortIndexInput, (OMX_U32)maxInputSize);
      }
 +// Capri's OMX fail to set a reasonable default size from width and height
-+#ifdef CAPRI_HWC
++#ifdef HAWAII_HWC
 +    else if (!strncmp(mComponentName, "OMX.brcm.video.*.*.*.decoder", 21)) {
 +        int32_t width;
 +        int32_t height;
@@ -114,7 +114,7 @@ index 5178c2a..bbddd0c 100644
          return err;
      }
  
-+#ifdef CAPRI_HWC
++#ifdef HAWAII_HWC
 +    if (strncmp(mComponentName.c_str(), "OMX.brcm.video.*.*.*.decoder", 21) != 0)
 +        // Skip checking on vc4 encoder. It will return the incorrect
 +        // port index, but correct parameters.
