@@ -4,6 +4,7 @@ COUNT=0
 CURRENT_DIR="$PWD"
 PD="device/samsung/kylepro/patches"
 PATCHES=(
+'bionic				bionic.patch'
 'build				build.patch'
 'frameworks/av			frameworks_av.patch'
 'frameworks/base		frameworks_base.patch'
