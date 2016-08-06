@@ -1,0 +1,28 @@
+From 5d5d5d7657442570f5fae10295ef0a66e288952a Mon Sep 17 00:00:00 2001
+From: ghsr <ghsr92@yandex.ru>
+Date: Wed, 18 May 2016 15:19:33 +0600
+Subject: [PATCH] Revert "Remove textrels support for platform libs"
+
+This reverts commit 8068786ae67835291521e52f39c695e40f3ad20d.
+---
+ linker/linker.cpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/linker/linker.cpp b/linker/linker.cpp
+index 9eb3a65..70220d1 100644
+--- a/linker/linker.cpp
++++ b/linker/linker.cpp
+@@ -3818,7 +3818,9 @@ bool soinfo::link_image(const soinfo_list_t& global_group, const soinfo_list_t&
+ #if !defined(__LP64__)
+   if (has_text_relocations) {
+     // Fail if app is targeting sdk version > 22
+-    if (get_application_target_sdk_version() > 22) {
++    // TODO (dimitry): remove != __ANDROID_API__ check once http://b/20020312 is fixed
++    if (get_application_target_sdk_version() != __ANDROID_API__
++        && get_application_target_sdk_version() > 22) {
+       PRINT("%s: has text relocations", get_realpath());
+       DL_ERR("%s: has text relocations", get_realpath());
+       return false;
+-- 
+2.9.2
+

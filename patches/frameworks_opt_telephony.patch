@@ -1,7 +1,7 @@
-From 163fdb792eba4d9132b64fa95571980e670ed3a8 Mon Sep 17 00:00:00 2001
+From 56ea515e7cdf2149d6529f5320dca8422fe11b21 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Thu, 22 Nov 2012 06:02:18 +0000
-Subject: [PATCH 1/9] Allow a device to include its own RIL subclass
+Subject: [PATCH 1/8] Allow a device to include its own RIL subclass
 
 For cases where a single device needs a subclass, there's no need to
 pollute the common core with it: just stick it in the device's own
@@ -30,13 +30,13 @@ index 449faa0..d312fec 100644
  LOCAL_MODULE := telephony-common
  
 -- 
-2.9.0
+2.9.2
 
 
-From bc37d226caef0854554264b83aa705d5ec1bb9ae Mon Sep 17 00:00:00 2001
+From a7d6931c6745989a71090f364e0765af5142e718 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Thu, 22 Nov 2012 17:47:31 +0100
-Subject: [PATCH 2/9] RIL: Make RIL subclassable
+Subject: [PATCH 2/8] RIL: Make RIL subclassable
 
 Change-Id: I9144ef279ca9c8cb9e657a28342f0f4cb3e7debd
 
@@ -47,7 +47,7 @@ Conflicts:
  1 file changed, 50 insertions(+), 50 deletions(-)
 
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 4ada1aa..8a85566 100644
+index 2936356..12573ba 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
 @@ -228,7 +228,7 @@ class RILRequest {
@@ -59,7 +59,7 @@ index 4ada1aa..8a85566 100644
      static final String RILJ_LOG_TAG = "RILJ";
      static final boolean RILJ_LOGD = true;
      static final boolean RILJ_LOGV = false; // STOPSHIP if true
-@@ -2268,7 +2268,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2269,7 +2269,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          }
      }
  
@@ -68,8 +68,8 @@ index 4ada1aa..8a85566 100644
          RILRequest rr = RILRequest.obtain(RIL_REQUEST_SCREEN_STATE, null);
          rr.mParcel.writeInt(1);
          rr.mParcel.writeInt(on ? 1 : 0);
-@@ -2287,7 +2287,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
-         updateScreenState();
+@@ -2288,7 +2288,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         updateScreenState(false);
     }
  
 -    private RadioState getRadioStateFromInt(int stateInt) {
@@ -77,7 +77,7 @@ index 4ada1aa..8a85566 100644
          RadioState state;
  
          /* RIL_RadioState ril.h */
-@@ -2303,7 +2303,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2304,7 +2304,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return state;
      }
  
@@ -86,7 +86,7 @@ index 4ada1aa..8a85566 100644
          setRadioState(newState);
      }
  
-@@ -2354,7 +2354,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2355,7 +2355,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          }
      }
  
@@ -95,7 +95,7 @@ index 4ada1aa..8a85566 100644
      send(RILRequest rr) {
          Message msg;
  
-@@ -2371,7 +2371,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2372,7 +2372,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          msg.sendToTarget();
      }
  
@@ -104,7 +104,7 @@ index 4ada1aa..8a85566 100644
      processResponse (Parcel p) {
          int type;
  
-@@ -2393,7 +2393,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2394,7 +2394,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
       * @param error is the RIL_Errno sent back
       * @param loggable true means to print all requests in mRequestList
       */
@@ -113,7 +113,7 @@ index 4ada1aa..8a85566 100644
          RILRequest rr;
          synchronized (mRequestList) {
              int count = mRequestList.size();
-@@ -2417,7 +2417,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2418,7 +2418,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          }
      }
  
@@ -122,7 +122,7 @@ index 4ada1aa..8a85566 100644
          RILRequest rr = null;
          synchronized (mRequestList) {
              rr = mRequestList.get(serial);
-@@ -2429,7 +2429,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2430,7 +2430,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return rr;
      }
  
@@ -131,7 +131,7 @@ index 4ada1aa..8a85566 100644
      processSolicited (Parcel p) {
          int serial, error;
          boolean found = false;
-@@ -2691,7 +2691,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2692,7 +2692,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return rr;
      }
  
@@ -140,7 +140,7 @@ index 4ada1aa..8a85566 100644
          // default to UNKNOWN so we fail fast.
          int raf = RadioAccessFamily.RAF_UNKNOWN;
  
-@@ -2790,7 +2790,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -2791,7 +2791,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return s;
      }
  
@@ -149,7 +149,7 @@ index 4ada1aa..8a85566 100644
      processUnsolicited (Parcel p) {
          int response;
          Object ret;
-@@ -3286,7 +3286,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3291,7 +3291,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
       *
       * @param rilVer is the version of the ril or -1 if disconnected.
       */
@@ -158,7 +158,7 @@ index 4ada1aa..8a85566 100644
          mRilVersion = rilVer;
          if (mRilConnectedRegistrants != null) {
              mRilConnectedRegistrants.notifyRegistrants(
-@@ -3294,7 +3294,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3299,7 +3299,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          }
      }
  
@@ -167,7 +167,7 @@ index 4ada1aa..8a85566 100644
      responseInts(Parcel p) {
          int numInts;
          int response[];
-@@ -3310,7 +3310,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3315,7 +3315,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -176,7 +176,7 @@ index 4ada1aa..8a85566 100644
      responseFailCause(Parcel p) {
          LastCallFailCause failCause = new LastCallFailCause();
          failCause.causeCode = p.readInt();
-@@ -3320,12 +3320,12 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3325,12 +3325,12 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return failCause;
      }
  
@@ -191,7 +191,7 @@ index 4ada1aa..8a85566 100644
      responseCallForward(Parcel p) {
          int numInfos;
          CallForwardInfo infos[];
-@@ -3348,7 +3348,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3353,7 +3353,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return infos;
      }
  
@@ -200,7 +200,7 @@ index 4ada1aa..8a85566 100644
      responseSuppServiceNotification(Parcel p) {
          SuppServiceNotification notification = new SuppServiceNotification();
  
-@@ -3361,7 +3361,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3366,7 +3366,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return notification;
      }
  
@@ -209,7 +209,7 @@ index 4ada1aa..8a85566 100644
      responseCdmaSms(Parcel p) {
          SmsMessage sms;
          sms = SmsMessage.newFromParcel(p);
-@@ -3369,7 +3369,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3374,7 +3374,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return sms;
      }
  
@@ -218,7 +218,7 @@ index 4ada1aa..8a85566 100644
      responseString(Parcel p) {
          String response;
  
-@@ -3378,7 +3378,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3383,7 +3383,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -227,7 +227,7 @@ index 4ada1aa..8a85566 100644
      responseStrings(Parcel p) {
          int num;
          String response[];
-@@ -3388,7 +3388,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3393,7 +3393,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -236,7 +236,7 @@ index 4ada1aa..8a85566 100644
      responseRaw(Parcel p) {
          int num;
          byte response[];
-@@ -3398,7 +3398,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3403,7 +3403,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -245,7 +245,7 @@ index 4ada1aa..8a85566 100644
      responseSMS(Parcel p) {
          int messageRef, errorCode;
          String ackPDU;
-@@ -3413,7 +3413,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3418,7 +3418,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
      }
  
  
@@ -254,7 +254,7 @@ index 4ada1aa..8a85566 100644
      responseICC_IO(Parcel p) {
          int sw1, sw2;
          Message ret;
-@@ -3450,7 +3450,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3455,7 +3455,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
                  ? android.util.Base64.decode(s, android.util.Base64.DEFAULT) : (byte[]) null);
      }
  
@@ -263,7 +263,7 @@ index 4ada1aa..8a85566 100644
      responseIccCardStatus(Parcel p) {
          IccCardApplicationStatus appStatus;
  
-@@ -3482,7 +3482,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3487,7 +3487,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return cardStatus;
      }
  
@@ -272,7 +272,7 @@ index 4ada1aa..8a85566 100644
      responseSimRefresh(Parcel p) {
          IccRefreshResponse response = new IccRefreshResponse();
  
-@@ -3492,7 +3492,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3497,7 +3497,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -281,7 +281,7 @@ index 4ada1aa..8a85566 100644
      responseCallList(Parcel p) {
          int num;
          int voiceSettings;
-@@ -3570,7 +3570,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3575,7 +3575,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -290,7 +290,7 @@ index 4ada1aa..8a85566 100644
          DataCallResponse dataCall = new DataCallResponse();
  
          dataCall.version = version;
-@@ -3618,7 +3618,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3623,7 +3623,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return dataCall;
      }
  
@@ -299,7 +299,7 @@ index 4ada1aa..8a85566 100644
      responseDataCallList(Parcel p) {
          ArrayList<DataCallResponse> response;
  
-@@ -3634,7 +3634,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3639,7 +3639,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -308,7 +308,7 @@ index 4ada1aa..8a85566 100644
      responseSetupDataCall(Parcel p) {
          int ver = p.readInt();
          int num = p.readInt();
-@@ -3688,7 +3688,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3693,7 +3693,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return dataCall;
      }
  
@@ -317,7 +317,7 @@ index 4ada1aa..8a85566 100644
      responseOperatorInfos(Parcel p) {
          String strings[] = (String [])responseStrings(p);
          ArrayList<OperatorInfo> ret;
-@@ -3713,7 +3713,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3718,7 +3718,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return ret;
      }
  
@@ -326,7 +326,7 @@ index 4ada1aa..8a85566 100644
      responseCellList(Parcel p) {
         int num, rssi;
         String location;
-@@ -3741,7 +3741,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3746,7 +3746,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         return response;
      }
  
@@ -335,7 +335,7 @@ index 4ada1aa..8a85566 100644
         int [] response = (int[]) responseInts(p);
  
         if (response.length >= 1) {
-@@ -3753,7 +3753,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3758,7 +3758,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         return response;
      }
  
@@ -344,7 +344,7 @@ index 4ada1aa..8a85566 100644
          int num;
          ArrayList<SmsBroadcastConfigInfo> response;
          SmsBroadcastConfigInfo info;
-@@ -3775,7 +3775,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3780,7 +3780,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -353,7 +353,7 @@ index 4ada1aa..8a85566 100644
      responseCdmaBroadcastConfig(Parcel p) {
          int numServiceCategories;
          int response[];
-@@ -3814,7 +3814,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3819,7 +3819,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -362,7 +362,7 @@ index 4ada1aa..8a85566 100644
      responseSignalStrength(Parcel p) {
          // Assume this is gsm, but doesn't matter as ServiceStateTracker
          // sets the proper value.
-@@ -3822,7 +3822,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3827,7 +3827,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return signalStrength;
      }
  
@@ -371,7 +371,7 @@ index 4ada1aa..8a85566 100644
      responseCdmaInformationRecord(Parcel p) {
          int numberOfInfoRecs;
          ArrayList<CdmaInformationRecords> response;
-@@ -3842,7 +3842,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3847,7 +3847,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -380,7 +380,7 @@ index 4ada1aa..8a85566 100644
      responseCdmaCallWaiting(Parcel p) {
          CdmaCallWaitingNotification notification = new CdmaCallWaitingNotification();
  
-@@ -3861,7 +3861,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3866,7 +3866,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return notification;
      }
  
@@ -389,7 +389,7 @@ index 4ada1aa..8a85566 100644
      responseCallRing(Parcel p){
          char response[] = new char[4];
  
-@@ -3873,7 +3873,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3878,7 +3878,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
@@ -398,7 +398,7 @@ index 4ada1aa..8a85566 100644
      notifyRegistrantsCdmaInfoRec(CdmaInformationRecords infoRec) {
          int response = RIL_UNSOL_CDMA_INFO_REC;
          if (infoRec.record instanceof CdmaInformationRecords.CdmaDisplayInfoRec) {
-@@ -3978,7 +3978,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -3983,7 +3983,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
        return response;
     }
  
@@ -407,7 +407,7 @@ index 4ada1aa..8a85566 100644
      responseRadioCapability(Parcel p) {
          int version = p.readInt();
          int session = p.readInt();
-@@ -3998,7 +3998,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -4003,7 +4003,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return rc;
      }
  
@@ -416,7 +416,7 @@ index 4ada1aa..8a85566 100644
          final ArrayList<Integer> capacityResponse = new ArrayList<Integer>();
          final int capacityDownKbps = p.readInt();
          final int confidenceLevel = p.readByte();
-@@ -4015,7 +4015,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -4020,7 +4020,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return capacityResponse;
      }
  
@@ -425,7 +425,7 @@ index 4ada1aa..8a85566 100644
          final ArrayList<Integer> statusResponse = new ArrayList<Integer>();
          final int lceStatus = (int)p.readByte();
          final int actualInterval = p.readInt();
-@@ -4028,7 +4028,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -4033,7 +4033,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return statusResponse;
      }
  
@@ -434,7 +434,7 @@ index 4ada1aa..8a85566 100644
          final int sleepModeTimeMs = p.readInt();
          final int idleModeTimeMs = p.readInt();
          int [] txModeTimeMs = new int[ModemActivityInfo.TX_POWER_LEVELS];
-@@ -4256,33 +4256,33 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -4261,33 +4261,33 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          }
      }
  
@@ -476,13 +476,13 @@ index 4ada1aa..8a85566 100644
          int num;
          SsData ssData = new SsData();
 -- 
-2.9.0
+2.9.2
 
 
-From e3103d7490c9d5e8b61d6f836a4ce39b5ad839e0 Mon Sep 17 00:00:00 2001
+From 4f28a1cd23228de37c94d56e33466d1466de1753 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 8 Mar 2014 19:35:17 +0700
-Subject: [PATCH 3/9] RIL: mark mInstanceId as protected
+Subject: [PATCH 3/8] RIL: mark mInstanceId as protected
 
 To use in RIL subclasses
 
@@ -492,7 +492,7 @@ Change-Id: I4ab1ea79079e3b03670b1e985f7a574df1f16658
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 8a85566..493d9c5 100644
+index 12573ba..b84c097 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
 @@ -267,7 +267,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
@@ -505,13 +505,13 @@ index 8a85566..493d9c5 100644
      //***** Events
  
 -- 
-2.9.0
+2.9.2
 
 
-From d65077bf700aef0e1dccff691e4cd27e40b49418 Mon Sep 17 00:00:00 2001
+From a8d3cdcfc15c1dfb01426833b7c22b0ca056c181 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 31 May 2014 12:34:56 +0700
-Subject: [PATCH 4/9] telephony: support for RIL that does not send
+Subject: [PATCH 4/8] telephony: support for RIL that does not send
  UNSOL_CALL_RING
 
 Samsung Broadcom RIL does not send UNSOL_CALL_RING at all, so it
@@ -524,10 +524,10 @@ Change-Id: Ib7373d32777f6c42ee488972a7aa63ae8e1cd09b
  1 file changed, 19 insertions(+)
 
 diff --git a/src/java/com/android/internal/telephony/PhoneBase.java b/src/java/com/android/internal/telephony/PhoneBase.java
-index 9064926..693ab0d 100644
+index 930d45e..fc6522e 100644
 --- a/src/java/com/android/internal/telephony/PhoneBase.java
 +++ b/src/java/com/android/internal/telephony/PhoneBase.java
-@@ -217,6 +217,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -220,6 +220,7 @@ public abstract class PhoneBase extends Handler implements Phone {
      boolean mDnsCheckDisabled;
      public DcTrackerBase mDcTracker;
      boolean mDoesRilSendMultipleCallRing;
@@ -535,7 +535,7 @@ index 9064926..693ab0d 100644
      int mCallRingContinueToken;
      int mCallRingDelay;
      public boolean mIsTheCurrentActivePhone = true;
-@@ -444,6 +445,11 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -449,6 +450,11 @@ public abstract class PhoneBase extends Handler implements Phone {
                  TelephonyProperties.PROPERTY_RIL_SENDS_MULTIPLE_CALL_RING, true);
          Rlog.d(LOG_TAG, "mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
  
@@ -547,7 +547,7 @@ index 9064926..693ab0d 100644
          mCallRingDelay = SystemProperties.getInt(
                  TelephonyProperties.PROPERTY_CALL_RING_DELAY, 3000);
          Rlog.d(LOG_TAG, "mCallRingDelay=" + mCallRingDelay);
-@@ -2051,6 +2057,18 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -2056,6 +2062,18 @@ public abstract class PhoneBase extends Handler implements Phone {
      public void notifyNewRingingConnectionP(Connection cn) {
          if (!mIsVoiceCapable)
              return;
@@ -566,7 +566,7 @@ index 9064926..693ab0d 100644
          AsyncResult ar = new AsyncResult(null, cn, null);
          mNewRingingConnectionRegistrants.notifyRegistrants(ar);
      }
-@@ -2612,6 +2630,7 @@ public abstract class PhoneBase extends Handler implements Phone {
+@@ -2632,6 +2650,7 @@ public abstract class PhoneBase extends Handler implements Phone {
          pw.println(" mDnsCheckDisabled=" + mDnsCheckDisabled);
          pw.println(" mDcTracker=" + mDcTracker);
          pw.println(" mDoesRilSendMultipleCallRing=" + mDoesRilSendMultipleCallRing);
@@ -575,40 +575,13 @@ index 9064926..693ab0d 100644
          pw.println(" mCallRingDelay=" + mCallRingDelay);
          pw.println(" mIsTheCurrentActivePhone=" + mIsTheCurrentActivePhone);
 -- 
-2.9.0
+2.9.2
 
 
-From 02439d0ee58795503228ebcaf921dc1f06f8ece5 Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sat, 15 Nov 2014 17:39:50 +0700
-Subject: [PATCH 5/9] telephony: RIL: i9082: set correct rild names
-
-Change-Id: Idf8e98ae2f36f30b84be04b7b062ca4b52cebd8a
----
- src/java/com/android/internal/telephony/RIL.java | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 493d9c5..1a06585 100644
---- a/src/java/com/android/internal/telephony/RIL.java
-+++ b/src/java/com/android/internal/telephony/RIL.java
-@@ -281,7 +281,7 @@ public class RIL extends BaseCommands implements CommandsInterface {
-     static final int RESPONSE_SOLICITED = 0;
-     static final int RESPONSE_UNSOLICITED = 1;
- 
--    static final String[] SOCKET_NAME_RIL = {"rild", "rild2", "rild3"};
-+    static final String[] SOCKET_NAME_RIL = {"rild", "rild1", "rild2"};
- 
-     static final int SOCKET_OPEN_RETRY_MILLIS = 4 * 1000;
- 
--- 
-2.9.0
-
-
-From 40d717e3855052efd4da95caebb82b5271ddaf49 Mon Sep 17 00:00:00 2001
+From 051805c57c07680fa790ee0a6d31569e1270a50b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Wed, 17 Dec 2014 21:19:34 +0700
-Subject: [PATCH 6/9] Forward port Samsung STK support
+Subject: [PATCH 5/8] Forward port Samsung STK support
  (frameworks/opt/telephony)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -1169,13 +1142,13 @@ index 91a6fd6..d753659 100644
 +    }
  }
 -- 
-2.9.0
+2.9.2
 
 
-From 252c919aa0057fbfce7ffc6e0132b09d20e54b1a Mon Sep 17 00:00:00 2001
+From c6a0b49c219cf2da53ef1ff0ab7e899f64c086cd Mon Sep 17 00:00:00 2001
 From: Mike Kasick <mike@kasick.org>
 Date: Sat, 14 Mar 2015 20:20:39 +0700
-Subject: [PATCH 7/9] RILs: Eliminate repeated overrides of
+Subject: [PATCH 6/8] RILs: Eliminate repeated overrides of
  responseOperatorInfos.
 
 - Add mQANElements field, default to 4 in RIL, use in responseOperatorInfos.
@@ -1194,7 +1167,7 @@ Change-Id: I1254a670d8611f76aad13a6f197c67012c7d4c47
  1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 1a06585..dca13df 100644
+index b84c097..d9a9eac 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
 @@ -269,6 +269,11 @@ public class RIL extends BaseCommands implements CommandsInterface {
@@ -1209,7 +1182,7 @@ index 1a06585..dca13df 100644
      //***** Events
  
      static final int EVENT_SEND                 = 1;
-@@ -3693,15 +3698,15 @@ public class RIL extends BaseCommands implements CommandsInterface {
+@@ -3698,15 +3703,15 @@ public class RIL extends BaseCommands implements CommandsInterface {
          String strings[] = (String [])responseStrings(p);
          ArrayList<OperatorInfo> ret;
  
@@ -1230,13 +1203,13 @@ index 1a06585..dca13df 100644
                  new OperatorInfo(
                      strings[i+0],
 -- 
-2.9.0
+2.9.2
 
 
-From a26c77de976c139feae04439723a9f3f49d5f7f5 Mon Sep 17 00:00:00 2001
+From 3af9c4446b1b07d35a24bba228588503d8f39955 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 22 Nov 2012 19:01:13 +0100
-Subject: [PATCH 8/9] telephony: Use reflection to create command interface
+Subject: [PATCH 7/8] telephony: Use reflection to create command interface
  (RIL class)
 
 Change-Id: Icdc02eaa74b89dbde4ddfb989cc62481d6423312
@@ -1262,7 +1235,7 @@ Change-Id: Id47d51737a9fb78e6d43a179ba304b1ba03c4219
  1 file changed, 25 insertions(+), 2 deletions(-)
 
 diff --git a/src/java/com/android/internal/telephony/PhoneFactory.java b/src/java/com/android/internal/telephony/PhoneFactory.java
-index 0543151..166a400 100644
+index f4c4341..62fea01 100644
 --- a/src/java/com/android/internal/telephony/PhoneFactory.java
 +++ b/src/java/com/android/internal/telephony/PhoneFactory.java
 @@ -47,6 +47,7 @@ import com.android.internal.util.IndentingPrintWriter;
@@ -1321,13 +1294,13 @@ index 0543151..166a400 100644
          synchronized (sLockProxyPhones) {
              if (!sMadeDefaults) {
 -- 
-2.9.0
+2.9.2
 
 
-From 5313a5b13b7b347bd2e83e9480f89addea953a88 Mon Sep 17 00:00:00 2001
+From f84b2d83ada75c69a77cc83fa16bf0dfde7f1d3c Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 28 Dec 2014 18:53:11 +0700
-Subject: [PATCH 9/9] UiccController: use registerForAvailable only for
+Subject: [PATCH 8/8] UiccController: use registerForAvailable only for
  persist.radio.apm_sim_not_pwdn
 
 Some QCOM RILs allow the SIM to be loaded in airplane mode, thus
@@ -1359,5 +1332,5 @@ index 4f3b58b..a8df6fb 100644
              } else {
                  mCis[i].registerForOn(this, EVENT_ICC_STATUS_CHANGED, index);
 -- 
-2.9.0
+2.9.2
 

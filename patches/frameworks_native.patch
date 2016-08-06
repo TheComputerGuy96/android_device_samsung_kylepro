@@ -1,4 +1,4 @@
-From 8fa4a5e0b83ad503aa4b7f375399844117f7910b Mon Sep 17 00:00:00 2001
+From 6d7b98c6eb8b1a4b7b9716e298b8da92d95cf98e Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 18 Nov 2014 08:38:33 +0700
 Subject: [PATCH 01/11] Bring back support for glReadPixels screenshot path
@@ -66,7 +66,7 @@ index 8c3d49e..39b6ce1 100644
      /* Clears the frame statistics for animations.
       *
 diff --git a/libs/gui/ISurfaceComposer.cpp b/libs/gui/ISurfaceComposer.cpp
-index 78886d5..0ad6339 100644
+index 9bfc906..423c94c 100644
 --- a/libs/gui/ISurfaceComposer.cpp
 +++ b/libs/gui/ISurfaceComposer.cpp
 @@ -103,7 +103,8 @@ public:
@@ -103,7 +103,7 @@ index 78886d5..0ad6339 100644
              return NO_ERROR;
          }
 diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
-index 6ad47d8..fe82e3b 100644
+index 5863798..ded3aa7 100644
 --- a/libs/gui/SurfaceComposerClient.cpp
 +++ b/libs/gui/SurfaceComposerClient.cpp
 @@ -691,7 +691,8 @@ status_t ScreenshotClient::capture(
@@ -451,10 +451,10 @@ index b3baadd..5d77208 100644
      /* ------------------------------------------------------------------------
       * EGL
 -- 
-2.9.0
+2.9.2
 
 
-From 95595fcbb68ce2ba061722c5b32ea108a9e9abf2 Mon Sep 17 00:00:00 2001
+From aa9bf4edd8d918bd4c383c8808c97f26a3e9f3cc Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 6 Aug 2013 16:11:06 +0100
 Subject: [PATCH 02/11] libgui: Bring back support for mHeap-based screenshots
@@ -539,22 +539,22 @@ index 37d953e..06e50c6 100644
      mutable sp<IGraphicBufferProducer> mProducer;
      CpuConsumer::LockedBuffer mBuffer;
 diff --git a/libs/gui/Android.mk b/libs/gui/Android.mk
-index 8a965dd..e439d84 100644
+index ffa0922..1b5a7c6 100644
 --- a/libs/gui/Android.mk
 +++ b/libs/gui/Android.mk
-@@ -82,6 +82,10 @@ LOCAL_SHARED_LIBRARIES := \
+@@ -81,6 +81,10 @@ LOCAL_SHARED_LIBRARIES := \
+ 	libutils \
  	liblog
  
- 
 +ifeq ($(BOARD_USE_MHEAP_SCREENSHOT),true)
-+    LOCAL_CFLAGS += -DUSE_MHEAP_SCREENSHOT
++	LOCAL_CFLAGS += -DUSE_MHEAP_SCREENSHOT
 +endif
 +
- LOCAL_MODULE := libgui
+ LOCAL_EXPORT_SHARED_LIBRARY_HEADERS := libbinder
  
- ifeq ($(TARGET_BOARD_PLATFORM), tegra)
+ LOCAL_MODULE := libgui
 diff --git a/libs/gui/ISurfaceComposer.cpp b/libs/gui/ISurfaceComposer.cpp
-index 0ad6339..7db2e7f 100644
+index 423c94c..37fdfa9 100644
 --- a/libs/gui/ISurfaceComposer.cpp
 +++ b/libs/gui/ISurfaceComposer.cpp
 @@ -98,6 +98,33 @@ public:
@@ -624,7 +624,7 @@ index 0ad6339..7db2e7f 100644
              CHECK_INTERFACE(ISurfaceComposer, data, reply);
              sp<IBinder> display = data.readStrongBinder();
 diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
-index fe82e3b..0b47f75 100644
+index ded3aa7..9416f87 100644
 --- a/libs/gui/SurfaceComposerClient.cpp
 +++ b/libs/gui/SurfaceComposerClient.cpp
 @@ -690,6 +690,14 @@ status_t ScreenshotClient::capture(
@@ -688,7 +688,7 @@ index fe82e3b..0b47f75 100644
  
  void const* ScreenshotClient::getPixels() const {
 diff --git a/services/surfaceflinger/Android.mk b/services/surfaceflinger/Android.mk
-index 1eb2361..446fd38 100644
+index 17ca10e..5b389e2 100644
 --- a/services/surfaceflinger/Android.mk
 +++ b/services/surfaceflinger/Android.mk
 @@ -63,6 +63,10 @@ ifeq ($(TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK),true)
@@ -945,13 +945,49 @@ index 5d77208..f32bf7d 100644
       * EGL
       */
 -- 
-2.9.0
+2.9.2
 
 
-From e28a7c24b90b964ec3ce6ebe35fc92dcda7f08fb Mon Sep 17 00:00:00 2001
+From ce8a965ecbcb89adc13bf0e7d2543e1646650a29 Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Wed, 26 Nov 2014 20:04:52 +0700
+Subject: [PATCH 03/11] libgui: fix test after compatibility patches
+
+Change-Id: Iae7333f025bb0271f008e4cc0356cf704800f1b7
+---
+ libs/gui/tests/Surface_test.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libs/gui/tests/Surface_test.cpp b/libs/gui/tests/Surface_test.cpp
+index 3f495f8..0311d1f 100644
+--- a/libs/gui/tests/Surface_test.cpp
++++ b/libs/gui/tests/Surface_test.cpp
+@@ -98,7 +98,7 @@ TEST_F(SurfaceTest, ScreenshotsOfProtectedBuffersSucceed) {
+     sp<ISurfaceComposer> sf(ComposerService::getComposerService());
+     sp<IBinder> display(sf->getBuiltInDisplay(ISurfaceComposer::eDisplayIdMain));
+     ASSERT_EQ(NO_ERROR, sf->captureScreen(display, producer, Rect(),
+-            64, 64, 0, 0x7fffffff, false));
++            64, 64, 0, 0x7fffffff, false, ISurfaceComposer::eRotateNone, false));
+ 
+     // Set the PROTECTED usage bit and verify that the screenshot fails.  Note
+     // that we need to dequeue a buffer in order for it to actually get
+@@ -127,7 +127,7 @@ TEST_F(SurfaceTest, ScreenshotsOfProtectedBuffersSucceed) {
+         ASSERT_EQ(NO_ERROR, anw->queueBuffer(anw.get(), buf, -1));
+     }
+     ASSERT_EQ(NO_ERROR, sf->captureScreen(display, producer, Rect(),
+-            64, 64, 0, 0x7fffffff, false));
++            64, 64, 0, 0x7fffffff, false, ISurfaceComposer::eRotateNone, false));
+ }
+ 
+ TEST_F(SurfaceTest, ConcreteTypeIsSurface) {
+-- 
+2.9.2
+
+
+From a841498af9e85e3047a0ba5ef64c795efcfc4962 Mon Sep 17 00:00:00 2001
 From: Ethan Chen <intervigil@gmail.com>
 Date: Thu, 15 Oct 2015 13:50:10 -0700
-Subject: [PATCH 03/11] Revert "egl: Remove old tuna BGRA vs RGBA workaround."
+Subject: [PATCH 04/11] Revert "egl: Remove old tuna BGRA vs RGBA workaround."
 
 This reverts commit 733a80754786d39cdc0fee09509b194472c320bc.
 
@@ -962,7 +998,7 @@ Change-Id: Ifb41720ed020489892a667914ea3bd3f1ac6504e
  2 files changed, 12 insertions(+)
 
 diff --git a/opengl/libs/Android.mk b/opengl/libs/Android.mk
-index 18ad300..661b99c 100644
+index 4cbca63..2e11f26 100644
 --- a/opengl/libs/Android.mk
 +++ b/opengl/libs/Android.mk
 @@ -47,6 +47,9 @@ LOCAL_CFLAGS += -DEGL_TRACE=1
@@ -1003,13 +1039,13 @@ index cdec565..4d9eaf5 100644
          // now select a corresponding sRGB format if needed
          if (attrib_list && dp->haveExtension("EGL_KHR_gl_colorspace")) {
 -- 
-2.9.0
+2.9.2
 
 
-From 14f88ed125c3b8e51d3d8ae37800a407af953b38 Mon Sep 17 00:00:00 2001
+From 2ec8406ec43c4e3bea2062c22d03bcead4a5928d Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sat, 2 Nov 2013 23:02:15 -0700
-Subject: [PATCH 04/11] libEGL: allow devices to workaround Google bug 10194508
+Subject: [PATCH 05/11] libEGL: allow devices to workaround Google bug 10194508
 
 Most older blobs don't have the EGL_KHR_gl_colorspace
 extension and need this workaround.
@@ -1020,7 +1056,7 @@ Change-Id: Ifc5d097c1a0b68275d23c2d191976ac96631b695
  1 file changed, 3 insertions(+)
 
 diff --git a/opengl/libs/Android.mk b/opengl/libs/Android.mk
-index 661b99c..e952a38 100644
+index 2e11f26..eaac47d 100644
 --- a/opengl/libs/Android.mk
 +++ b/opengl/libs/Android.mk
 @@ -50,6 +50,9 @@ endif
@@ -1034,13 +1070,13 @@ index 661b99c..e952a38 100644
    LOCAL_CFLAGS += -DMAX_EGL_CACHE_ENTRY_SIZE=$(MAX_EGL_CACHE_ENTRY_SIZE)
  endif
 -- 
-2.9.0
+2.9.2
 
 
-From 71ce67002561b9f7ac4ab96f338f7a0ebf92fe7f Mon Sep 17 00:00:00 2001
+From 68f24dc89e513fb425d91bbd2dafae608dedb4c6 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Thu, 14 Nov 2013 15:19:46 +0700
-Subject: [PATCH 05/11] binder: add compat symbol
+Subject: [PATCH 06/11] binder: add compat symbol
 
 Required for older Samsung libtvout
 
@@ -1050,10 +1086,10 @@ Change-Id: Ib18d2513570382432d49f302ab041230650372f2
  1 file changed, 4 insertions(+)
 
 diff --git a/libs/binder/IPCThreadState.cpp b/libs/binder/IPCThreadState.cpp
-index af18e11..9eee115 100644
+index 6d4071e..c2c0ae5 100644
 --- a/libs/binder/IPCThreadState.cpp
 +++ b/libs/binder/IPCThreadState.cpp
-@@ -343,6 +343,10 @@ status_t IPCThreadState::clearLastError()
+@@ -350,6 +350,10 @@ status_t IPCThreadState::clearLastError()
      return err;
  }
  
@@ -1065,13 +1101,13 @@ index af18e11..9eee115 100644
  {
      return mCallingPid;
 -- 
-2.9.0
+2.9.2
 
 
-From bcbe2804335c609c718a03046cca19d1e073dbca Mon Sep 17 00:00:00 2001
+From f19aa63e3b1fcebafb754ec7a6eaa074fb35e57b Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Tue, 10 Dec 2013 19:38:17 +0700
-Subject: [PATCH 06/11] binder: add compat symbols
+Subject: [PATCH 07/11] binder: add compat symbols
 
 Required for libtvservice_binder.so on I9082
 
@@ -1081,10 +1117,10 @@ Change-Id: I059e92f19e4c5a911d38faa9c4df549c75c90761
  1 file changed, 12 insertions(+)
 
 diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 22d7ef3..7709a88 100644
+index 6fd6ddc..2bef778 100644
 --- a/libs/binder/Parcel.cpp
 +++ b/libs/binder/Parcel.cpp
-@@ -990,6 +990,12 @@ status_t Parcel::writeDupImmutableBlobFileDescriptor(int fd)
+@@ -1260,6 +1260,12 @@ status_t Parcel::writeDupImmutableBlobFileDescriptor(int fd)
      return writeDupFileDescriptor(fd);
  }
  
@@ -1097,7 +1133,7 @@ index 22d7ef3..7709a88 100644
  status_t Parcel::write(const FlattenableHelperInterface& val)
  {
      status_t err;
-@@ -1430,6 +1436,12 @@ status_t Parcel::readBlob(size_t len, ReadableBlob* outBlob) const
+@@ -2046,6 +2052,12 @@ status_t Parcel::readBlob(size_t len, ReadableBlob* outBlob) const
      return NO_ERROR;
  }
  
@@ -1111,113 +1147,114 @@ index 22d7ef3..7709a88 100644
  {
      // size
 -- 
-2.9.0
+2.9.2
 
 
-From f66a3b7718590e8734cc3fa18420aab8dd8e4385 Mon Sep 17 00:00:00 2001
+From 8fe46813fa088d8ba662aee81c76eff5564b14d0 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 16 Dec 2013 15:45:42 +0700
-Subject: [PATCH 07/11] sf: CAPRI_HWC: fix rotation artifact
+Subject: [PATCH 08/11] sf: i9082: fix rotation artifact
 
 ---
- services/surfaceflinger/SurfaceFlinger.cpp | 5 +++++
- 1 file changed, 5 insertions(+)
+ services/surfaceflinger/SurfaceFlinger.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
-index ad96716..979da10 100644
+index ad96716..11395e0 100644
 --- a/services/surfaceflinger/SurfaceFlinger.cpp
 +++ b/services/surfaceflinger/SurfaceFlinger.cpp
-@@ -3364,6 +3364,11 @@ status_t SurfaceFlinger::captureScreenImplLocked(
+@@ -3364,6 +3364,9 @@ status_t SurfaceFlinger::captureScreenImplLocked(
  {
      ATRACE_CALL();
  
-+// Rotation artifact problems when useReadPixels is false
-+#ifdef HAWAII_HWC
++    // Rotation artifact problems when useReadPixels is false
 +    useReadPixels = true;
-+#endif
 +
      // get screen geometry
      uint32_t hw_w = hw->getWidth();
      uint32_t hw_h = hw->getHeight();
 -- 
-2.9.0
+2.9.2
 
 
-From 3a2bd93da399173eb3ef0789a030858d3f78ffc3 Mon Sep 17 00:00:00 2001
+From 611d924bb4f05297b723405a06d2546a308d795a Mon Sep 17 00:00:00 2001
+From: Pawit Pornkitprasan <p.pawit@gmail.com>
+Date: Sat, 20 Dec 2014 19:09:27 +0700
+Subject: [PATCH 09/11] sf: i9082: fix for screen recording
+
+Change-Id: I6c7e59400eab86bc5ec0ffebbcc475fa0fa404d2
+---
+ libs/gui/BufferQueueProducer.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libs/gui/BufferQueueProducer.cpp b/libs/gui/BufferQueueProducer.cpp
+index a941e2d..b9796fd 100644
+--- a/libs/gui/BufferQueueProducer.cpp
++++ b/libs/gui/BufferQueueProducer.cpp
+@@ -193,7 +193,8 @@ status_t BufferQueueProducer::waitForFreeSlotThenRelock(const char* caller,
+             const int newUndequeuedCount =
+                 maxBufferCount - (dequeuedCount + 1);
+             const int minUndequeuedCount =
+-                mCore->getMinUndequeuedBufferCountLocked(async);
++                // HACK: for some reason, we need to reduce min undequeue for screen recording
++                mCore->getMinUndequeuedBufferCountLocked(false);
+             if (newUndequeuedCount < minUndequeuedCount) {
+                 BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
+                         "(dequeued=%d undequeued=%d)",
+-- 
+2.9.2
+
+
+From 19ffb31cafb0ba59ce38d0ebed71219b240a58f8 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Mon, 15 Dec 2014 23:12:44 +0700
-Subject: [PATCH 08/11] SurfaceComposerClient: don't block RGBA_8888 for
- screenshot on CAPRI_HWC
+Subject: [PATCH 10/11] SurfaceComposerClient: don't block RGBA_8888 for
+ screenshot
 
 Works here and required for ColorFade animation
 
 Change-Id: Ie7d549bb63e11380d7efcab27b7e4d9f3eb2a1fe
 ---
- libs/gui/SurfaceComposerClient.cpp | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ libs/gui/SurfaceComposerClient.cpp | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/libs/gui/SurfaceComposerClient.cpp b/libs/gui/SurfaceComposerClient.cpp
-index 0b47f75..545aa0a 100644
+index 9416f87..bfe543f 100644
 --- a/libs/gui/SurfaceComposerClient.cpp
 +++ b/libs/gui/SurfaceComposerClient.cpp
-@@ -690,7 +690,7 @@ status_t ScreenshotClient::capture(
+@@ -690,14 +690,6 @@ status_t ScreenshotClient::capture(
          uint32_t minLayerZ, uint32_t maxLayerZ, bool useIdentityTransform) {
      sp<ISurfaceComposer> s(ComposerService::getComposerService());
      if (s == NULL) return NO_INIT;
 -#ifdef USE_MHEAP_SCREENSHOT
-+#if defined(USE_MHEAP_SCREENSHOT) && !defined(HAWAII_HWC)
-     int format = 0;
-     producer->query(NATIVE_WINDOW_FORMAT,&format);
-     if (format == PIXEL_FORMAT_RGBA_8888) {
+-    int format = 0;
+-    producer->query(NATIVE_WINDOW_FORMAT,&format);
+-    if (format == PIXEL_FORMAT_RGBA_8888) {
+-        /* For some reason, this format fails badly */
+-        return BAD_VALUE;
+-    }
+-#endif
+     return s->captureScreen(display, producer, sourceCrop,
+             reqWidth, reqHeight, minLayerZ, maxLayerZ, useIdentityTransform,
+             ISurfaceComposer::eRotateNone, false);
 -- 
-2.9.0
+2.9.2
 
 
-From c40c626860c12d71b15c7ab5abf33d998a151a05 Mon Sep 17 00:00:00 2001
-From: Pawit Pornkitprasan <p.pawit@gmail.com>
-Date: Sat, 20 Dec 2014 19:09:27 +0700
-Subject: [PATCH 09/11] sf: CAPRI_HWC: fix for screen recording
-
-Change-Id: I6c7e59400eab86bc5ec0ffebbcc475fa0fa404d2
----
- libs/gui/BufferQueueProducer.cpp | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/libs/gui/BufferQueueProducer.cpp b/libs/gui/BufferQueueProducer.cpp
-index 87e5b4d..9634db7 100644
---- a/libs/gui/BufferQueueProducer.cpp
-+++ b/libs/gui/BufferQueueProducer.cpp
-@@ -193,7 +193,12 @@ status_t BufferQueueProducer::waitForFreeSlotThenRelock(const char* caller,
-             const int newUndequeuedCount =
-                 maxBufferCount - (dequeuedCount + 1);
-             const int minUndequeuedCount =
-+#ifdef HAWAII_HWC
-+                // HACK: for some reason, we need to reduce min undequeue for screen recording
-+                mCore->getMinUndequeuedBufferCountLocked(false);
-+#else
-                 mCore->getMinUndequeuedBufferCountLocked(async);
-+#endif
-             if (newUndequeuedCount < minUndequeuedCount) {
-                 BQ_LOGE("%s: min undequeued buffer count (%d) exceeded "
-                         "(dequeued=%d undequeued=%d)",
--- 
-2.9.0
-
-
-From e517fc6609a1ae45499cec5ced56815146d0dc06 Mon Sep 17 00:00:00 2001
+From 4b27999e93ef8e459601ace4eb11d1b8a0cc5702 Mon Sep 17 00:00:00 2001
 From: Pawit Pornkitprasan <p.pawit@gmail.com>
 Date: Sun, 11 Oct 2015 15:28:51 +0700
-Subject: [PATCH 10/11] binder: add compat symbol for RIL
+Subject: [PATCH 11/11] binder: add compat symbol for RIL
 
 ---
  libs/binder/Parcel.cpp | 6 ++++++
  1 file changed, 6 insertions(+)
 
 diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 7709a88..90c3e12 100644
+index 2bef778..129e805 100644
 --- a/libs/binder/Parcel.cpp
 +++ b/libs/binder/Parcel.cpp
-@@ -851,6 +851,12 @@ status_t Parcel::writeString16(const String16& str)
+@@ -1075,6 +1075,12 @@ status_t Parcel::writeString16(const String16& str)
      return writeString16(str.string(), str.size());
  }
  
@@ -1231,177 +1268,5 @@ index 7709a88..90c3e12 100644
  {
      if (str == NULL) return writeInt32(-1);
 -- 
-2.9.0
+2.9.2
 
-
-From a67ce33b1c5524c28d1f9f3178ca27511319ec9c Mon Sep 17 00:00:00 2001
-From: forkbomb <keepcalm444@gmail.com>
-Date: Thu, 3 Dec 2015 20:34:15 +1100
-Subject: [PATCH 11/11] libbinder: allow devices to disable ashmem size
- tracking
-
-The addition of ashmem size tracking can lead to parcel objects
-overwriting other values on the stack in old binary blobs.
-
-Change-Id: Ife8514be1ba639c4061de38b59794c46bcc2d7f8
----
- include/binder/Parcel.h |  2 ++
- libs/binder/Parcel.cpp  | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
-
-diff --git a/include/binder/Parcel.h b/include/binder/Parcel.h
-index 16cd6cf..91ffae0 100644
---- a/include/binder/Parcel.h
-+++ b/include/binder/Parcel.h
-@@ -340,8 +340,10 @@ public:
-         inline void* data() { return mData; }
-     };
- 
-+#ifndef DISABLE_ASHMEM_TRACKING
- private:
-     size_t mOpenAshmemSize;
-+#endif
- 
- public:
-     // TODO: Remove once ABI can be changed.
-diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
-index 90c3e12..c77db35 100644
---- a/libs/binder/Parcel.cpp
-+++ b/libs/binder/Parcel.cpp
-@@ -182,6 +182,10 @@ static void release_object(const sp<ProcessState>& proc,
- 
-                     close(obj.handle);
-                 }
-+#ifdef DISABLE_ASHMEM_TRACKING
-+            } else if (obj.cookie != 0) {
-+                close(obj.handle);
-+#endif
-             }
-             return;
-         }
-@@ -532,7 +536,11 @@ status_t Parcel::appendFrom(const Parcel *parcel, size_t offset, size_t len)
- 
-             flat_binder_object* flat
-                 = reinterpret_cast<flat_binder_object*>(mData + off);
-+#ifndef DISABLE_ASHMEM_TRACKING
-             acquire_object(proc, *flat, this, &mOpenAshmemSize);
-+#else
-+            acquire_object(proc, *flat, this);
-+#endif
- 
-             if (flat->type == BINDER_TYPE_FD) {
-                 // If this is a file descriptor, we need to dup it so the
-@@ -1064,7 +1072,11 @@ restart_write:
-         // Need to write meta-data?
-         if (nullMetaData || val.binder != 0) {
-             mObjects[mObjectsSize] = mDataPos;
-+#ifndef DISABLE_ASHMEM_TRACKING
-             acquire_object(ProcessState::self(), val, this, &mOpenAshmemSize);
-+#else
-+            acquire_object(ProcessState::self(), val, this);
-+#endif
-             mObjectsSize++;
-         }
- 
-@@ -1653,7 +1665,11 @@ void Parcel::releaseObjects()
-         i--;
-         const flat_binder_object* flat
-             = reinterpret_cast<flat_binder_object*>(data+objects[i]);
-+#ifndef DISABLE_ASHMEM_TRACKING
-         release_object(proc, *flat, this, &mOpenAshmemSize);
-+#else
-+        release_object(proc, *flat, this);
-+#endif
-     }
- }
- 
-@@ -1667,7 +1683,11 @@ void Parcel::acquireObjects()
-         i--;
-         const flat_binder_object* flat
-             = reinterpret_cast<flat_binder_object*>(data+objects[i]);
-+#ifndef DISABLE_ASHMEM_TRACKING
-         acquire_object(proc, *flat, this, &mOpenAshmemSize);
-+#else
-+        acquire_object(proc, *flat, this);
-+#endif
-     }
- }
- 
-@@ -1849,7 +1869,11 @@ status_t Parcel::continueWrite(size_t desired)
-                     // will need to rescan because we may have lopped off the only FDs
-                     mFdsKnown = false;
-                 }
-+#ifndef DISABLE_ASHMEM_TRACKING
-                 release_object(proc, *flat, this, &mOpenAshmemSize);
-+#else
-+                release_object(proc, *flat, this);
-+#endif
-             }
-             binder_size_t* objects =
-                 (binder_size_t*)realloc(mObjects, objectsSize*sizeof(binder_size_t));
-@@ -1934,7 +1958,9 @@ void Parcel::initState()
-     mFdsKnown = true;
-     mAllowFds = true;
-     mOwner = NULL;
-+#ifndef DISABLE_ASHMEM_TRACKING
-     mOpenAshmemSize = 0;
-+#endif
- }
- 
- void Parcel::scanForFds() const
-@@ -1957,12 +1983,20 @@ size_t Parcel::getBlobAshmemSize() const
-     // This used to return the size of all blobs that were written to ashmem, now we're returning
-     // the ashmem currently referenced by this Parcel, which should be equivalent.
-     // TODO: Remove method once ABI can be changed.
-+#ifndef DISABLE_ASHMEM_TRACKING
-     return mOpenAshmemSize;
-+#else
-+    return 0;
-+#endif
- }
- 
- size_t Parcel::getOpenAshmemSize() const
- {
-+#ifndef DISABLE_ASHMEM_TRACKING
-     return mOpenAshmemSize;
-+#else
-+    return 0;
-+#endif
- }
- 
- // --- Parcel::Blob ---
--- 
-2.9.0
-
-
-From 179b6eaa9724a03d62a0a4bcaa8d5f790a850371 Mon Sep 17 00:00:00 2001
-From: TheComputerGuy96 <vwestlife20@gmail.com>
-Date: Mon, 23 May 2016 14:27:22 +0300
-Subject: [PATCH] Fix compile error
-
----
- libs/gui/tests/Surface_test.cpp | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/libs/gui/tests/Surface_test.cpp b/libs/gui/tests/Surface_test.cpp
-index 3f495f8..0311d1f 100644
---- a/libs/gui/tests/Surface_test.cpp
-+++ b/libs/gui/tests/Surface_test.cpp
-@@ -98,7 +98,7 @@ TEST_F(SurfaceTest, ScreenshotsOfProtectedBuffersSucceed) {
-     sp<ISurfaceComposer> sf(ComposerService::getComposerService());
-     sp<IBinder> display(sf->getBuiltInDisplay(ISurfaceComposer::eDisplayIdMain));
-     ASSERT_EQ(NO_ERROR, sf->captureScreen(display, producer, Rect(),
--            64, 64, 0, 0x7fffffff, false));
-+            64, 64, 0, 0x7fffffff, false, ISurfaceComposer::eRotateNone, false));
- 
-     // Set the PROTECTED usage bit and verify that the screenshot fails.  Note
-     // that we need to dequeue a buffer in order for it to actually get
-@@ -127,7 +127,7 @@ TEST_F(SurfaceTest, ScreenshotsOfProtectedBuffersSucceed) {
-         ASSERT_EQ(NO_ERROR, anw->queueBuffer(anw.get(), buf, -1));
-     }
-     ASSERT_EQ(NO_ERROR, sf->captureScreen(display, producer, Rect(),
--            64, 64, 0, 0x7fffffff, false));
-+            64, 64, 0, 0x7fffffff, false, ISurfaceComposer::eRotateNone, false));
- }
- 
- TEST_F(SurfaceTest, ConcreteTypeIsSurface) {

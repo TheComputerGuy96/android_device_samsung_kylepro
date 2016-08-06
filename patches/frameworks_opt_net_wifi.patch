@@ -1,4 +1,4 @@
-From 14f77a0be0f210ab6271bb4ff311391e29e8ad4a Mon Sep 17 00:00:00 2001
+From eb9f1267039f25dbf8590246dd78c714f787374f Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Mon, 4 Nov 2013 02:54:13 +0000
 Subject: [PATCH] wifi: Set the mode at native layer
@@ -27,7 +27,7 @@ index 7bdd17c..b50f40b 100644
  
      private static final String TAG = "WifiNative-HAL";
 diff --git a/service/java/com/android/server/wifi/WifiStateMachine.java b/service/java/com/android/server/wifi/WifiStateMachine.java
-index 7773cb9..539b168 100644
+index adfc049..fc85293 100644
 --- a/service/java/com/android/server/wifi/WifiStateMachine.java
 +++ b/service/java/com/android/server/wifi/WifiStateMachine.java
 @@ -2057,6 +2057,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiPno
@@ -47,7 +47,7 @@ index 7773cb9..539b168 100644
          } else {
              sendMessage(CMD_STOP_AP);
 diff --git a/service/jni/com_android_server_wifi_WifiNative.cpp b/service/jni/com_android_server_wifi_WifiNative.cpp
-index 31166e3..a600342 100644
+index 3890435..4b7cba2 100644
 --- a/service/jni/com_android_server_wifi_WifiNative.cpp
 +++ b/service/jni/com_android_server_wifi_WifiNative.cpp
 @@ -155,6 +155,11 @@ static jstring doStringCommand(JNIEnv* env, jstring javaCommand) {
@@ -62,7 +62,7 @@ index 31166e3..a600342 100644
  static jboolean android_net_wifi_isDriverLoaded(JNIEnv* env, jobject)
  {
      return (::is_wifi_driver_loaded() == 1);
-@@ -2173,6 +2178,7 @@ static JNINativeMethod gWifiMethods[] = {
+@@ -2180,6 +2185,7 @@ static JNINativeMethod gWifiMethods[] = {
      { "doIntCommandNative", "(Ljava/lang/String;)I", (void*)android_net_wifi_doIntCommand },
      { "doStringCommandNative", "(Ljava/lang/String;)Ljava/lang/String;",
              (void*) android_net_wifi_doStringCommand },
@@ -71,5 +71,5 @@ index 31166e3..a600342 100644
      { "stopHalNative", "()V", (void*) android_net_wifi_stopHal },
      { "waitForHalEventNative", "()V", (void*) android_net_wifi_waitForHalEvents },
 -- 
-2.7.3
+2.9.2
 

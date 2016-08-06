@@ -1,7 +1,7 @@
-From 8b6d909649613d5018918b9f04d5231892b3f637 Mon Sep 17 00:00:00 2001
+From 1b8456a14abb6639bd666c96ebfbfd1a9672bb5b Mon Sep 17 00:00:00 2001
 From: Koushik Dutta <koushd@gmail.com>
 Date: Sat, 26 Jun 2010 22:53:55 -0700
-Subject: [PATCH 01/14] add support for overriding build.prop settings.
+Subject: [PATCH 01/11] add support for overriding build.prop settings.
 
 Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
 ---
@@ -11,10 +11,10 @@ Change-Id: Ie4224d608b7bcb0c2087bd77bc954f8f5f9b6495
  3 files changed, 5 insertions(+)
 
 diff --git a/core/Makefile b/core/Makefile
-index 07d1c94..d694dda 100644
+index 79a0dc3..963b63e 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -221,6 +221,7 @@ endif
+@@ -247,6 +247,7 @@ endif
  			TARGET_CPU_ABI="$(TARGET_CPU_ABI)" \
  			TARGET_CPU_ABI2="$(TARGET_CPU_ABI2)" \
  			TARGET_AAPT_CHARACTERISTICS="$(TARGET_AAPT_CHARACTERISTICS)" \
@@ -23,10 +23,10 @@ index 07d1c94..d694dda 100644
  	$(hide) $(foreach file,$(system_prop_file), \
  		if [ -f "$(file)" ]; then \
 diff --git a/core/product.mk b/core/product.mk
-index e97cba4..258a399 100644
+index 4f780f9..fc3f8da 100644
 --- a/core/product.mk
 +++ b/core/product.mk
-@@ -65,6 +65,7 @@ endef
+@@ -73,6 +73,7 @@ endef
  #
  
  _product_var_list := \
@@ -35,27 +35,27 @@ index e97cba4..258a399 100644
      PRODUCT_MODEL \
      PRODUCT_LOCALES \
 diff --git a/core/product_config.mk b/core/product_config.mk
-index 5240ae7..a87d0c6 100644
+index a4063f1..07ad679 100644
 --- a/core/product_config.mk
 +++ b/core/product_config.mk
-@@ -343,6 +343,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
+@@ -355,6 +355,9 @@ PRODUCT_PROPERTY_OVERRIDES := \
  PRODUCT_DEFAULT_PROPERTY_OVERRIDES := \
      $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEFAULT_PROPERTY_OVERRIDES))
  
 +PRODUCT_BUILD_PROP_OVERRIDES := \
 +	$(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_BUILD_PROP_OVERRIDES))
 +
- # Should we use the default resources or add any product specific overlays
- PRODUCT_PACKAGE_OVERLAYS := \
-     $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_PACKAGE_OVERLAYS))
+ PRODUCT_SHIPPING_API_LEVEL := $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SHIPPING_API_LEVEL))
+ ifdef PRODUCT_SHIPPING_API_LEVEL
+ ADDITIONAL_BUILD_PROPERTIES += \
 -- 
-2.9.0
+2.9.2
 
 
-From d9817bec7166736956ca1e81f23172bd9a9d4368 Mon Sep 17 00:00:00 2001
+From 5a5a708e413370204d654029502259fd126ae58a Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 11 Apr 2012 11:21:23 +0100
-Subject: [PATCH 02/14] build: Inline kernel building as a buildtime task
+Subject: [PATCH 02/11] build: Inline kernel building as a buildtime task
 
 Kernel image integration is now done in the build system. The
 "one true way" of doing this is to download the kernel source
@@ -589,53 +589,13 @@ index 0000000..78661c4
 +ALL_PREBUILT += $(INSTALLED_KERNEL_TARGET)
 +endif
 -- 
-2.9.0
+2.9.2
 
 
-From 547cf6e429a7f177ebe136688d1fceacdd0735af Mon Sep 17 00:00:00 2001
-From: Cristoforo Cataldo <cristoforo.cataldo@gmail.com>
-Date: Sun, 30 Nov 2014 06:12:35 +0100
-Subject: [PATCH 03/14] core: Enable -mcpu=cortex-a9 flag for Cortex-A9 cpu
- variant
-
-Change-Id: I9294a518bcdc21ccbae72eadd9f3c1a12982d028
-
-Conflicts:
-	core/combo/arch/arm/armv7-a-neon.mk
----
- core/combo/arch/arm/armv7-a-neon.mk | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/core/combo/arch/arm/armv7-a-neon.mk b/core/combo/arch/arm/armv7-a-neon.mk
-index 99f17aa..164dc2a 100644
---- a/core/combo/arch/arm/armv7-a-neon.mk
-+++ b/core/combo/arch/arm/armv7-a-neon.mk
-@@ -19,6 +19,9 @@ ifneq (,$(filter cortex-a15 krait denver,$(TARGET_$(combo_2nd_arch_prefix)CPU_VA
- 	arch_variant_ldflags := \
- 		-Wl,--no-fix-cortex-a8
- else
-+ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a9)
-+	arch_variant_cflags := -mcpu=cortex-a9
-+else
- ifeq ($(strip $(TARGET_$(combo_2nd_arch_prefix)CPU_VARIANT)),cortex-a8)
- 	arch_variant_cflags := -mcpu=cortex-a8
- 	arch_variant_ldflags := \
-@@ -36,6 +39,7 @@ else
- endif
- endif
- endif
-+endif
- 
- arch_variant_cflags += \
-     -mfloat-abi=softfp \
--- 
-2.9.0
-
-
-From 34733d35d8703851d6a7179968d2a342053a6038 Mon Sep 17 00:00:00 2001
+From 92c0b474fd139a289dfe04770299a5705ce2ebcd Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <github@cerqueira.org>
 Date: Wed, 16 Nov 2011 23:14:27 +0000
-Subject: [PATCH 04/14] ota: Remove cruft we don't care about
+Subject: [PATCH 03/11] ota: Remove cruft we don't care about
 
 Skip the date check (downgrade to your content), and don't include
 recovery in otapackages.
@@ -645,12 +605,12 @@ recovery in otapackages.
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index c5c16b4..d4cec87 100755
+index 582412a..1a22210 100755
 --- a/tools/releasetools/ota_from_target_files.py
 +++ b/tools/releasetools/ota_from_target_files.py
-@@ -533,10 +533,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
-   has_recovery_patch = HasRecoveryPatch(input_zip)
-   block_based = OPTIONS.block_based and has_recovery_patch
+@@ -561,10 +561,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
+ 
+   metadata["ota-type"] = "BLOCK" if block_based else "FILE"
  
 -  if not OPTIONS.omit_prereq:
 -    ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
@@ -664,13 +624,13 @@ index c5c16b4..d4cec87 100755
    AppendAssertions(script, OPTIONS.info_dict, oem_dict)
    device_specific.FullOTA_Assertions()
 -- 
-2.9.0
+2.9.2
 
 
-From 900bdab4cd4ada11ac85088030d2e2d3d693e052 Mon Sep 17 00:00:00 2001
+From 387a95242acca1128bbfdc8c4a66725d8901d380 Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <chirayudesai1@gmail.com>
 Date: Thu, 27 Sep 2012 18:11:25 +0530
-Subject: [PATCH 05/14] envsetup: set OUT_DIR to an absolute path always
+Subject: [PATCH 04/11] envsetup: set OUT_DIR to an absolute path always
 
 OUT_DIR was set to $(TOPDIR)out previously,
 but $(TOPDIR) was null, so it was a relative path.
@@ -689,10 +649,10 @@ Change-Id: I459a3b1325a1bbea0565cd73f6acf160d4ed9b39
  1 file changed, 4 insertions(+)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index bf04455..5f43cf9 100644
+index 0a7472a..0cf079d 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -207,8 +207,12 @@ endif
+@@ -198,8 +198,12 @@ endif
  
  ifeq (,$(strip $(OUT_DIR)))
  ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
@@ -706,13 +666,13 @@ index bf04455..5f43cf9 100644
  endif
  endif
 -- 
-2.9.0
+2.9.2
 
 
-From 303142977f427935c335886d6805cc65eb620d6c Mon Sep 17 00:00:00 2001
+From aa87b7c3b4cb50cddfbd29e938fcb4f94da68576 Mon Sep 17 00:00:00 2001
 From: David Ferguson <ferguson.david@gmail.com>
 Date: Thu, 4 Oct 2012 10:15:58 -0400
-Subject: [PATCH 06/14] build: work around missing readlink -f on Mac
+Subject: [PATCH 05/11] build: work around missing readlink -f on Mac
 
 Change-Id: I5d56366cf33a2b02f1886c87815d00cff279779d
 ---
@@ -720,10 +680,10 @@ Change-Id: I5d56366cf33a2b02f1886c87815d00cff279779d
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index 5f43cf9..eb19f4f 100644
+index 0cf079d..679404d 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -210,7 +210,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
+@@ -201,7 +201,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
  ifneq ($(TOPDIR),)
  OUT_DIR := $(TOPDIR)out
  else
@@ -733,13 +693,13 @@ index 5f43cf9..eb19f4f 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.9.0
+2.9.2
 
 
-From 83ed1f337697956438fd41040c1a7c91917ab836 Mon Sep 17 00:00:00 2001
+From fac64d5007a2695d0da5b7741e87318a05d8a79f Mon Sep 17 00:00:00 2001
 From: Chirayu Desai <cdesai@cyanogenmod.org>
 Date: Wed, 1 May 2013 15:48:08 +0530
-Subject: [PATCH 07/14] envsetup: use $(CURDIR) for getting current directory
+Subject: [PATCH 06/11] envsetup: use $(CURDIR) for getting current directory
 
 Change-Id: I5f00faf64ec31d86dd2e48ec038748ce8499380b
 ---
@@ -747,10 +707,10 @@ Change-Id: I5f00faf64ec31d86dd2e48ec038748ce8499380b
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/envsetup.mk b/core/envsetup.mk
-index eb19f4f..08524b3 100644
+index 679404d..8da62fc 100644
 --- a/core/envsetup.mk
 +++ b/core/envsetup.mk
-@@ -210,7 +210,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
+@@ -201,7 +201,7 @@ ifeq (,$(strip $(OUT_DIR_COMMON_BASE)))
  ifneq ($(TOPDIR),)
  OUT_DIR := $(TOPDIR)out
  else
@@ -760,13 +720,13 @@ index eb19f4f..08524b3 100644
  else
  OUT_DIR := $(OUT_DIR_COMMON_BASE)/$(notdir $(PWD))
 -- 
-2.9.0
+2.9.2
 
 
-From cbd0549f9db1219889406e56f73eafb13846f9c6 Mon Sep 17 00:00:00 2001
+From 7723e7169ebfad4f0eda6fa6ab9fbfcd21048073 Mon Sep 17 00:00:00 2001
 From: Ricardo Cerqueira <cyanogenmod@cerqueira.org>
 Date: Tue, 12 Apr 2011 10:57:22 +0100
-Subject: [PATCH 08/14] Allow a device to generically define its own headers
+Subject: [PATCH 07/11] Allow a device to generically define its own headers
 
 We have a few cases of devices including specific versions of projects
 just because of modified headers (msm_mdp.h comes to mind), and I just
@@ -797,12 +757,12 @@ Change-Id: I489b2aab6dbacd9122d834f85e07b63ed1271f07
  1 file changed, 5 insertions(+)
 
 diff --git a/core/binary.mk b/core/binary.mk
-index b8003d7..dfc53c7 100644
+index c3bf451..04c8e7e 100644
 --- a/core/binary.mk
 +++ b/core/binary.mk
-@@ -956,6 +956,11 @@ normal_objects := \
- 
- all_objects := $(normal_objects) $(gen_o_objects)
+@@ -1250,6 +1250,11 @@ my_tracked_gen_files :=
+ $(foreach f,$(my_tracked_src_files),$(eval my_src_file_obj_$(s):=))
+ my_tracked_src_files :=
  
 +## Allow a device's own headers to take precedence over global ones
 +ifneq ($(TARGET_SPECIFIC_HEADER_PATH),)
@@ -813,70 +773,13 @@ index b8003d7..dfc53c7 100644
  
  ifndef LOCAL_SDK_VERSION
 -- 
-2.9.0
+2.9.2
 
 
-From 2ce5d84cc3432d4f351ad251fb5ea2112427ba23 Mon Sep 17 00:00:00 2001
-From: Brandon McAnsh <brandon.mcansh@gmail.com>
-Date: Sat, 10 Oct 2015 10:20:38 -0400
-Subject: [PATCH 09/14] Set kernel gcc version to 4.8 for ARM targets
-
-* This causes the check during path setup for an arm-eabi-4.9 toolchain to fail,
-      thus only leaving the arm-linux-androideabi- to exist.
-* This is only temporary as Google is building with 4.9 and 4.8 gcc's
-       have been removed in their next release
-
-Was updated to 4.9 here: https://github.com/CyanogenMod/android_build/commit/bf8346e90c5a6d5d809fa7166d50714b2b6bc30d
-Toolchain check here: https://github.com/CyanogenMod/android_build/blob/cm-13.0/envsetup.sh#L189
-
-Change-Id: I24bff10e392a6cdced1797870e523144e83d611d
-Signed-off-by: Brandon McAnsh <brandon.mcansh@gmail.com>
----
- core/combo/TARGET_linux-arm.mk | 1 +
- envsetup.sh                    | 3 ++-
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/core/combo/TARGET_linux-arm.mk b/core/combo/TARGET_linux-arm.mk
-index 3651c39..5020865 100644
---- a/core/combo/TARGET_linux-arm.mk
-+++ b/core/combo/TARGET_linux-arm.mk
-@@ -39,6 +39,7 @@ $(combo_2nd_arch_prefix)TARGET_NDK_GCC_VERSION := 4.9
- 
- ifeq ($(strip $(TARGET_GCC_VERSION_EXP)),)
- $(combo_2nd_arch_prefix)TARGET_GCC_VERSION := 4.9
-+$(combo_2nd_arch_prefix)TARGET_LEGACY_GCC_VERSION := 4.8
- else
- $(combo_2nd_arch_prefix)TARGET_GCC_VERSION := $(TARGET_GCC_VERSION_EXP)
- endif
-diff --git a/envsetup.sh b/envsetup.sh
-index 6ad3a9e..9596dd6 100644
---- a/envsetup.sh
-+++ b/envsetup.sh
-@@ -129,6 +129,7 @@ function setpaths()
-     # defined in core/config.mk
-     targetgccversion=$(get_build_var TARGET_GCC_VERSION)
-     targetgccversion2=$(get_build_var 2ND_TARGET_GCC_VERSION)
-+    targetlegacygccversion=$(get_build_var TARGET_LEGACY_GCC_VERSION)
-     export TARGET_GCC_VERSION=$targetgccversion
- 
-     # The gcc toolchain does not exists for windows/cygwin. In this case, do not reference it.
-@@ -164,7 +165,7 @@ function setpaths()
-     case $ARCH in
-         arm)
-             # Legacy toolchain configuration used for ARM kernel compilation
--            toolchaindir=arm/arm-eabi-$targetgccversion/bin
-+            toolchaindir=arm/arm-eabi-$targetlegacygccversion/bin
-             if [ -d "$gccprebuiltdir/$toolchaindir" ]; then
-                  export ARM_EABI_TOOLCHAIN="$gccprebuiltdir/$toolchaindir"
-                  ANDROID_KERNEL_TOOLCHAIN_PATH="$ARM_EABI_TOOLCHAIN":
--- 
-2.9.0
-
-
-From 1806b74e3a7a574b40c38b10b6911ef47bc820f5 Mon Sep 17 00:00:00 2001
+From f0880360d3204b200c05897f2c65f100d960b533 Mon Sep 17 00:00:00 2001
 From: Steve Kondik <shade@chemlab.org>
 Date: Wed, 21 Apr 2010 11:39:48 -0400
-Subject: [PATCH 10/14] Allow override of device asserts, including
+Subject: [PATCH 08/11] Allow override of device asserts, including
  multi-device support.
 
 Set in board file with TARGET_OTA_ASSERT_DEVICE.
@@ -886,14 +789,14 @@ Change-Id: I3d06bdc0e3e26bde0c0e646accd050364f9713b9
 ---
  core/Makefile                               |  7 +++++++
  tools/releasetools/edify_generator.py       | 10 ++++++----
- tools/releasetools/ota_from_target_files.py | 13 +++++++++++--
- 3 files changed, 24 insertions(+), 6 deletions(-)
+ tools/releasetools/ota_from_target_files.py | 12 +++++++++++-
+ 3 files changed, 24 insertions(+), 5 deletions(-)
 
 diff --git a/core/Makefile b/core/Makefile
-index d694dda..a895cb2 100644
+index 963b63e..fb12e21 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -1556,6 +1556,12 @@ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+@@ -1944,6 +1944,12 @@ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
  
  $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
  
@@ -903,10 +806,10 @@ index d694dda..a895cb2 100644
 +    $(INTERNAL_OTA_PACKAGE_TARGET): override_device := $(TARGET_OTA_ASSERT_DEVICE)
 +endif
 +
- $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
+ 		build/tools/releasetools/ota_from_target_files
  	@echo "Package OTA: $@"
- 	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
-@@ -1563,6 +1569,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+@@ -1952,6 +1958,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
  	   --block \
  	   -p $(HOST_OUT) \
  	   -k $(KEY_CERT_PAIR) \
@@ -915,10 +818,10 @@ index d694dda..a895cb2 100644
  	   $(BUILT_TARGET_FILES_PACKAGE) $@
  
 diff --git a/tools/releasetools/edify_generator.py b/tools/releasetools/edify_generator.py
-index a52e328..c5fc4b6 100644
+index ecdc167..67bf5c9 100644
 --- a/tools/releasetools/edify_generator.py
 +++ b/tools/releasetools/edify_generator.py
-@@ -117,10 +117,12 @@ class EdifyGenerator(object):
+@@ -140,10 +140,12 @@ class EdifyGenerator(object):
  
    def AssertDevice(self, device):
      """Assert that the device identifier is the given string."""
@@ -936,31 +839,31 @@ index a52e328..c5fc4b6 100644
  
    def AssertSomeBootloader(self, *bootloaders):
 diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index d4cec87..a813c41 100755
+index 1a22210..449e749 100755
 --- a/tools/releasetools/ota_from_target_files.py
 +++ b/tools/releasetools/ota_from_target_files.py
-@@ -92,6 +92,9 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
-   --stash_threshold <float>
+@@ -106,6 +106,9 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
        Specifies the threshold that will be used to compute the maximum
        allowed stash size (defaults to 0.8).
-+
+ 
 +  --override_device <device>
 +      Override device-specific asserts. Can be a comma-separated list.
- """
++
+   --gen_verify
+       Generate an OTA package that verifies the partitions.
  
- import sys
-@@ -130,6 +133,7 @@ OPTIONS.updater_binary = None
- OPTIONS.oem_source = None
+@@ -154,6 +157,7 @@ OPTIONS.oem_source = None
+ OPTIONS.oem_no_mount = False
  OPTIONS.fallback_to_full = True
  OPTIONS.full_radio = False
 +OPTIONS.override_device = 'auto'
  OPTIONS.full_bootloader = False
  # Stash size cannot exceed cache_size * threshold.
  OPTIONS.cache_size = None
-@@ -413,7 +417,10 @@ def SignOutput(temp_zip_name, output_zip_name):
+@@ -440,7 +444,10 @@ def SignOutput(temp_zip_name, output_zip_name):
  def AppendAssertions(script, info_dict, oem_dict=None):
    oem_props = info_dict.get("oem_fingerprint_properties")
-   if oem_props is None or len(oem_props) == 0:
+   if not oem_props:
 -    device = GetBuildProp("ro.product.device", info_dict)
 +    if OPTIONS.override_device == "auto":
 +      device = GetBuildProp("ro.product.device", info_dict)
@@ -969,15 +872,7 @@ index d4cec87..a813c41 100755
      script.AssertDevice(device)
    else:
      if oem_dict is None:
-@@ -445,7 +452,6 @@ def GetOemProperty(name, oem_props, oem_dict, info_dict):
-     return oem_dict[name]
-   return GetBuildProp(name, info_dict)
- 
--
- def CalculateFingerprint(oem_props, oem_dict, info_dict):
-   if oem_props is None:
-     return GetBuildProp("ro.build.fingerprint", info_dict)
-@@ -1544,6 +1550,8 @@ def main(argv):
+@@ -1887,6 +1894,8 @@ def main(argv):
        OPTIONS.updater_binary = a
      elif o in ("--no_fallback_to_full",):
        OPTIONS.fallback_to_full = False
@@ -986,22 +881,22 @@ index d4cec87..a813c41 100755
      elif o == "--stash_threshold":
        try:
          OPTIONS.stash_threshold = float(a)
-@@ -1574,6 +1582,7 @@ def main(argv):
-                                  "oem_settings=",
+@@ -1923,6 +1932,7 @@ def main(argv):
+                                  "oem_no_mount",
                                   "verify",
                                   "no_fallback_to_full",
 +                                 "override_device=",
                                   "stash_threshold=",
-                              ], extra_option_handler=option_handler)
- 
+                                  "gen_verify",
+                                  "log_diff=",
 -- 
-2.9.0
+2.9.2
 
 
-From 5406a96487bc87ac3481098bfe18dff8280d79d0 Mon Sep 17 00:00:00 2001
+From 6cf7f1471648acb4c7702163726e42e678e069d6 Mon Sep 17 00:00:00 2001
 From: "Brint E. Kriebel" <bekit@cyngn.com>
 Date: Wed, 22 Jan 2014 15:51:46 -0800
-Subject: [PATCH 11/14] Store the value from TARGET_OTA_ASSERT_DEVICE to a file
+Subject: [PATCH 09/11] Store the value from TARGET_OTA_ASSERT_DEVICE to a file
 
 This is needed so it can be read in when re-signing a package to
 allow for the proper device asserts.
@@ -1012,25 +907,25 @@ Change-Id: I8f3bb491bbbaa4d2b827a45ef83f12c6c83e6712
  1 file changed, 1 insertion(+)
 
 diff --git a/core/Makefile b/core/Makefile
-index a895cb2..edc89ea 100644
+index fb12e21..16586ae 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -1563,6 +1563,7 @@ else
- endif
+@@ -1952,6 +1952,7 @@ endif
  
- $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
+ 		build/tools/releasetools/ota_from_target_files
 +	@echo "$(override_device)" > $(PRODUCT_OUT)/ota_override_device
  	@echo "Package OTA: $@"
  	$(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH MKBOOTIMG=$(MKBOOTIMG) \
  	   ./build/tools/releasetools/ota_from_target_files -v \
 -- 
-2.9.0
+2.9.2
 
 
-From ce58266ffac91e3a9a55ecc8bb927617bc7b643a Mon Sep 17 00:00:00 2001
+From dede10a526d44d4fdf78e048ccc9359ab0d7f534 Mon Sep 17 00:00:00 2001
 From: Matt Mower <mowerm@gmail.com>
 Date: Thu, 29 Oct 2015 22:45:52 -0400
-Subject: [PATCH 12/14] build: Ensure /system unmounted at install start
+Subject: [PATCH 10/11] build: Ensure /system unmounted at install start
 
 Account for the possibility that a user has mounted system manually
 before installing the FullOTA package.
@@ -1039,84 +934,38 @@ before installing the FullOTA package.
  1 file changed, 1 insertion(+)
 
 diff --git a/tools/releasetools/ota_from_target_files.py b/tools/releasetools/ota_from_target_files.py
-index a813c41..886b4f1 100755
+index 449e749..4202b94 100755
 --- a/tools/releasetools/ota_from_target_files.py
 +++ b/tools/releasetools/ota_from_target_files.py
-@@ -591,6 +591,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
-   script.Print("Target: %s" % CalculateFingerprint(
-       oem_props, oem_dict, OPTIONS.info_dict))
+@@ -619,6 +619,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
+   # Dump fingerprints
+   script.Print("Target: %s" % target_fp)
  
 +  script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
    device_specific.FullOTA_InstallBegin()
  
    system_progress = 0.75
 -- 
-2.9.0
+2.9.2
 
 
-From d5bd8494b747a1582457eb4da15ad126445eda79 Mon Sep 17 00:00:00 2001
-From: Alistair Strachan <alistair.strachan@imgtec.com>
-Date: Thu, 5 May 2016 16:29:08 -0700
-Subject: [PATCH 13/14] Avoid accidentally using the host's native 'as'
- command.
-
-When invoking clang for the host to assemble .S files, the -B flag
-would not be provided, which allowed the host prebuilt clang to
-use an 'as' from the native environment. Most of the time this
-"just works", but some newer 'as' versions cause problems with
-the older prebuilt toolchain, for example by generating
-unsupported relocation types.
-
-To avoid this problem, simply use the -B flag to tell clang to
-invoke the assembler from the correct prebuilt gcc prefix.
-
-Change-Id: I18ea4f37ae637b652cfd7321c41929f8be075342
-Signed-off-by: Alistair Strachan <alistair.strachan@imgtec.com>
----
- core/clang/HOST_x86_common.mk | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/core/clang/HOST_x86_common.mk b/core/clang/HOST_x86_common.mk
-index 74b5a69..7b3d6b5 100644
---- a/core/clang/HOST_x86_common.mk
-+++ b/core/clang/HOST_x86_common.mk
-@@ -11,7 +11,8 @@ endif
- ifeq ($(HOST_OS),linux)
- CLANG_CONFIG_x86_LINUX_HOST_EXTRA_ASFLAGS := \
-   --gcc-toolchain=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG) \
--  --sysroot=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/sysroot
-+  --sysroot=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/sysroot \
-+  -B$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)/x86_64-linux/bin
- 
- CLANG_CONFIG_x86_LINUX_HOST_EXTRA_CFLAGS := \
-   --gcc-toolchain=$($(clang_2nd_arch_prefix)HOST_TOOLCHAIN_FOR_CLANG)
-@@ -51,4 +52,4 @@ endif  # Linux
- 
- ifeq ($(HOST_OS),windows)
- # nothing required here yet
--endif
-+endif
-\ No newline at end of file
--- 
-2.9.0
-
-
-From 7b156565b90ed8f6b342644d8c910ccd41229b0e Mon Sep 17 00:00:00 2001
+From 3304a58aa3bf468d67f979e35f31351927b5d805 Mon Sep 17 00:00:00 2001
 From: ghsr <ghsr92@yandex.ru>
 Date: Tue, 21 Jun 2016 22:50:54 +0600
-Subject: [PATCH 14/14] build: Add bacon target and mka/brunch/breakfast
+Subject: [PATCH 11/11] build: Add bacon target and mka/brunch/breakfast
  aliases
 
 ---
- core/Makefile | 10 ++++++++-
- envsetup.sh   | 65 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 72 insertions(+), 3 deletions(-)
+ core/Makefile            | 10 +++++++-
+ core/version_defaults.mk |  2 +-
+ envsetup.sh              | 65 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 73 insertions(+), 4 deletions(-)
 
 diff --git a/core/Makefile b/core/Makefile
-index edc89ea..4a0c487 100644
+index 16586ae..131d86e 100644
 --- a/core/Makefile
 +++ b/core/Makefile
-@@ -1574,8 +1574,16 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
+@@ -1963,8 +1963,16 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) \
  	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
  	   $(BUILT_TARGET_FILES_PACKAGE) $@
  
@@ -1132,21 +981,34 @@ index edc89ea..4a0c487 100644
 +	$(hide) $(MD5SUM) $(CUSTOM_TARGET_PACKAGE) > $(CUSTOM_TARGET_PACKAGE).md5sum
 +	@echo "Package Complete: $(CUSTOM_TARGET_PACKAGE)"
  
- endif    # recovery_fstab is defined
- endif    # TARGET_NO_KERNEL != true
+ endif    # build_ota_package
+ 
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index 099b38d..ad15741 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -43,7 +43,7 @@ ifeq "" "$(PLATFORM_VERSION)"
+   # which is the version that we reveal to the end user.
+   # Update this value when the platform version changes (rather
+   # than overriding it somewhere else).  Can be an arbitrary string.
+-  PLATFORM_VERSION := 6.0.1
++  PLATFORM_VERSION := 7.0
+ endif
+ 
+ ifeq "" "$(PLATFORM_SDK_VERSION)"
 diff --git a/envsetup.sh b/envsetup.sh
-index 9596dd6..e87dfb3 100644
+index 3f61318..b17deca 100644
 --- a/envsetup.sh
 +++ b/envsetup.sh
-@@ -18,6 +18,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
- - sepgrep: Greps on all local sepolicy files.
- - sgrep:   Greps on all local source files.
- - godir:   Go to the directory containing a file.
+@@ -20,6 +20,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
+ - sepgrep:   Greps on all local sepolicy files.
+ - sgrep:     Greps on all local source files.
+ - godir:     Go to the directory containing a file.
 +- mka:     Builds using SCHED_BATCH on all processors
  
- Environemnt options:
+ Environment options:
  - SANITIZE_HOST: Set to 'true' to use ASAN for all host modules. Note that
-@@ -487,6 +488,44 @@ function print_lunch_menu()
+@@ -540,6 +541,44 @@ function print_lunch_menu()
      echo
  }
  
@@ -1191,7 +1053,7 @@ index 9596dd6..e87dfb3 100644
  function lunch()
  {
      local answer
-@@ -1450,10 +1489,10 @@ function get_make_command()
+@@ -1572,10 +1611,10 @@ function get_make_command()
    echo command make
  }
  
@@ -1204,8 +1066,8 @@ index 9596dd6..e87dfb3 100644
      local ret=$?
      local end_time=$(date +"%s")
      local tdiff=$(($end_time-$start_time))
-@@ -1488,6 +1527,28 @@ function make()
-     return $ret
+@@ -1639,6 +1678,28 @@ function provision()
+     "$ANDROID_PRODUCT_OUT/provision-device" "$@"
  }
  
 +function make()
@@ -1234,33 +1096,5 @@ index 9596dd6..e87dfb3 100644
      case `ps -o command -p $$` in
          *bash*)
 -- 
-2.9.0
-
-
-From fa74e4f85e57da57c50531675fc09dc915c8a5a9 Mon Sep 17 00:00:00 2001
-From: TheComputerGuy96 <vwestlife20@gmail.com>
-Date: Mon, 23 May 2016 09:09:27 +0000
-Subject: [PATCH] Use GCC 4.6
-
----
- core/tasks/kernel.mk | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/core/tasks/kernel.mk b/core/tasks/kernel.mk
-index 1b3ad64..722acca 100644
---- a/core/tasks/kernel.mk
-+++ b/core/tasks/kernel.mk
-@@ -169,7 +169,11 @@ ifneq ($(USE_CCACHE),)
-     ccache := $(strip $(wildcard $(ccache)))
- endif
- 
--KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
-+ifneq ($(TARGET_KERNEL_CUSTOM_TOOLCHAIN),)
-+    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-"
-+else
-+    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
-+endif
- ccache =
- 
- define mv-modules
+2.9.2
 

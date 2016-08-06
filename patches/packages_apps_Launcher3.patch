@@ -1,4 +1,4 @@
-From 775c3b7402a7d4e63e513111d2dcdac506314699 Mon Sep 17 00:00:00 2001
+From 968bdf4aec07b0479675881c27ed7fc01f3833c5 Mon Sep 17 00:00:00 2001
 From: ghsr <ghsr92@yandex.ru>
 Date: Wed, 13 Jan 2016 18:48:02 +0600
 Subject: [PATCH] InvariantDeviceProfile: Update grid icon size
@@ -66,5 +66,5 @@ index ae204c4..d773b4d 100644
      }
  
 -- 
-2.7.3
+2.9.2
 
