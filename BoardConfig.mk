@@ -133,9 +133,9 @@ BOARD_RIL_CLASS                             := ../../../device/samsung/kylepro/r
 # Recovery
 # Compile with BUILD_TWRP=true when build TWRP recovery
 ifeq ($(BUILD_TWRP),true)
-    TARGET_RECOVERY_FSTAB                   := device/samsung/kylepro/rootdir/twrp.fstab.hawaii_ss_kylepro
+    TARGET_RECOVERY_FSTAB                   := device/samsung/kylepro/rootdir/twrp.fstab.kylepro
 else
-    TARGET_RECOVERY_FSTAB                   := device/samsung/kylepro/rootdir/fstab.hawaii_ss_kylepro
+    TARGET_RECOVERY_FSTAB                   := device/samsung/kylepro/rootdir/fstab.kylepro
 endif
 TARGET_USE_CUSTOM_LUN_FILE_PATH             := /sys/class/android_usb/android0/f_mass_storage/lun/file
 TARGET_USERIMAGES_USE_EXT4                  := true
