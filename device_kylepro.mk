@@ -37,7 +37,6 @@ ADDITIONAL_DEFAULT_PROPERTIES += \
 
 # GPS/RIL
 PRODUCT_PACKAGES += \
-    libstlport \
     libglgps-compat
 
 # Packages
