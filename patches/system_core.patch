@@ -462,7 +462,8 @@ diff --git a/init/init.cpp b/init/init.cpp
 index 5cb0f5c..80d21be 100644
 --- a/init/init.cpp
 +++ b/init/init.cpp
-@@ -69,6 +69,8 @@ struct selabel_handle *sehandle_prop;
+@@ -69,6 +69,8 @@
+ struct selabel_handle *sehandle_prop;
  
  static int property_triggers_enabled = 0;
  
@@ -523,7 +524,7 @@ index a5392c6..8e077cc 100644
 +++ b/init/util.cpp
 @@ -316,6 +316,34 @@
     return ret;
-}
+ }
  
 +void get_hardware_name(char *hardware, unsigned int *revision) {
 +  FILE* fp = fopen("/proc/cpuinfo", "re");
