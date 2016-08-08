@@ -1098,3 +1098,30 @@ index 3f61318..b17deca 100644
 -- 
 2.9.2
 
+
+From fa74e4f85e57da57c50531675fc09dc915c8a5a9 Mon Sep 17 00:00:00 2001
+From: TheComputerGuy96 <vwestlife20@gmail.com>
+Date: Mon, 23 May 2016 09:09:27 +0000
+Subject: [PATCH] Use GCC 4.6
+
+---
+ core/tasks/kernel.mk | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/core/tasks/kernel.mk b/core/tasks/kernel.mk
+index 1b3ad64..722acca 100644
+--- a/core/tasks/kernel.mk
++++ b/core/tasks/kernel.mk
+@@ -169,7 +169,11 @@ ifneq ($(USE_CCACHE),)
+     ccache := $(strip $(wildcard $(ccache)))
+ endif
+ 
+-KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
++ifneq ($(TARGET_KERNEL_CUSTOM_TOOLCHAIN),)
++    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/$(TARGET_KERNEL_CUSTOM_TOOLCHAIN)/bin/arm-eabi-"
++else
++    KERNEL_CROSS_COMPILE := CROSS_COMPILE="$(ccache) $(KERNEL_TOOLCHAIN_PATH)"
++endif
+ ccache =
+ 
+ define mv-modules
