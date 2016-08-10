@@ -20,12 +20,12 @@
 
 ### Notice:
   - Run these commands while you are on the root directory of AOSP 6.0 source code to patch it before building the ROM:
-    ```sh
-    chmod +x device/samsung/kylepro/patch
-    device/samsung/kylepro/patch
-    patch -p1 < device/samsung/kylepro/AOSP\ 6.0\ patches.diff
-    patch -p1 < device/samsung/kylepro/misc/*.patch
-    ```
+```
+chmod +x device/samsung/kylepro/patch
+device/samsung/kylepro/patch
+patch -p1 < device/samsung/kylepro/AOSP\ 6.0\ patches.diff
+patch -p1 < device/samsung/kylepro/misc/*.patch
+```
 
 ### Other resources:
   - Kernel source: https://github.com/Samsung-KYLEPROXX/android_kernel_samsung_kyleproxx/tree/cm-13.0
