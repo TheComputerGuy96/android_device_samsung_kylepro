@@ -13,7 +13,6 @@ PATCHES=(
 'hardware/broadcom/libbt	hardware_broadcom_libbt.patch'
 'hardware/libhardware_legacy	hardware_libhardware_legacy.patch'
 'packages/apps/Camera2		packages_apps_Camera2.patch'
-'packages/apps/Dialer		packages_apps_Dialer.patch'
 'packages/apps/Launcher3	packages_apps_Launcher3.patch'
 'packages/apps/Settings		packages_apps_Settings.patch'
 'packages/inputmethods/LatinIME packages_inputmethods_LatinIME.patch'
