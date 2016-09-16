@@ -1,5 +1,3 @@
-$(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
-
 $(call inherit-product-if-exists, vendor/samsung/kyleproxx/kyleproxx-common-vendor.mk)
 
 PRODUCT_LOCALES += hdpi
@@ -10,41 +8,22 @@ DEVICE_PACKAGE_OVERLAYS += device/samsung/kylepro/overlay
 
 # Init files
 PRODUCT_COPY_FILES += \
-    device/samsung/kylepro/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
-    device/samsung/kylepro/rootdir/init.rc:root/init.rc \
-    device/samsung/kylepro/rootdir/init.hawaii_ss_kylepro.rc:root/init.hawaii_ss_kylepro.rc \
-    device/samsung/kylepro/rootdir/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
-    device/samsung/kylepro/rootdir/init.log.rc:root/init.log.rc \
-    device/samsung/kylepro/rootdir/lpm.rc:root/lpm.rc \
-    device/samsung/kylepro/rootdir/ueventd.hawaii_ss_kylepro.rc:root/ueventd.hawaii_ss_kylepro.rc
+    $(LOCAL_PATH)/rootdir/fstab.hawaii_ss_kylepro:root/fstab.hawaii_ss_kylepro \
+    $(LOCAL_PATH)/rootdir/init.hawaii_ss_kylepro.rc:root/init.hawaii_ss_kylepro.rc \
+    $(LOCAL_PATH)/rootdir/init.bcm2166x.usb.rc:root/init.bcm2166x.usb.rc \
+    $(LOCAL_PATH)/rootdir/init.log.rc:root/init.log.rc \
+    $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
+    $(LOCAL_PATH)/rootdir/ueventd.hawaii_ss_kylepro.rc:root/ueventd.hawaii_ss_kylepro.rc
 
 # Configs
 PRODUCT_COPY_FILES += \
-    device/samsung/kylepro/configs/media_codecs.xml:system/etc/media_codecs.xml
-
-ifeq ($(TARGET_BUILD_VARIANT),user)
-    # Secure ADB
-    ADDITIONAL_DEFAULT_PROPERTIES += \
-        ro.secure=1 \
-        ro.adb.secure=1
-else
-    # Insecure ADB
-    ADDITIONAL_DEFAULT_PROPERTIES += \
-        ro.secure=0 \
-        ro.adb.secure=0
-endif
+    $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
     e2fsck \
     setup_fs
-
-# CyanogenMod has removed CMAccount but not
-# fix the SetupWizard to working without it
-# http://review.cyanogenmod.org/#/c/131177/
-PRODUCT_PACKAGES += \
-    CMAccount
 
 # USB accessory
 PRODUCT_PACKAGES += \
@@ -58,7 +37,6 @@ PRODUCT_PACKAGES += \
     audio.primary.default \
     libaudio-resampler \
     lights.hawaii \
-    power.hawaii \
     libstagefrighthw
 
 # IPv6 tethering
@@ -82,10 +60,6 @@ PRODUCT_PACKAGES += \
     libnetcmdiface \
     wpa_supplicant \
     wpa_supplicant.conf
-
-# Torch
-PRODUCT_PACKAGES += \
-    Torch
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
@@ -114,10 +88,20 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SamsungBCMRIL \
     persist.radio.multisim.config=none \
     ro.multisim.simslotcount=1 \
-    cm.updater.uri=http://ota.sandpox.org/api \
     ro.telephony.call_ring.multiple=0 \
     camera2.portability.force_api=1 \
     ro.telephony.call_ring=0
+    
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.com.google.clientidbase=android-google \
+    keyguard.no_require_sim=true \
+    ro.url.legal=http://www.google.com/intl/%s/mobile/android/basic/phone-legal.html \
+    ro.url.legal.android_privacy=http://www.google.com/intl/%s/mobile/android/basic/privacy.html \
+    ro.com.android.wifi-watchlist=GoogleGuest \
+    ro.setupwizard.enterprise_mode=1 \
+    ro.com.android.dateformat=MM-dd-yyyy \
+    ro.com.android.dataroaming=false \
+    ro.build.selinux=1
 
 # Enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
@@ -143,15 +127,6 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp
 
 # Dalvik heap config
-include frameworks/native/build/phone-xhdpi-1024-dalvik-heap.mk
+include frameworks/native/build/phone-hdpi-512-dalvik-heap.mk
 
-# Texture config.
-include frameworks/native/build/phone-xxhdpi-2048-hwui-memory.mk
-
-$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-
-PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := full_kylepro
-PRODUCT_DEVICE := kylepro
-PRODUCT_MODEL := GT-S7580
+$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
