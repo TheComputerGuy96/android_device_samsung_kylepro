@@ -146,6 +146,9 @@ on post-fs-data
     chmod 0660 /sys/class/input/input2/rept_z
     chmod 0660 /sys/class/input/input2/odr
 
+    # We will create our own ril-daemon service with different perm
+    stop ril-daemon
+
 on boot
 
 # Bring CPUs online
