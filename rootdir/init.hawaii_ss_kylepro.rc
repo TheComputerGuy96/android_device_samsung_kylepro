@@ -531,7 +531,7 @@ service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emul
         group system
 
 # RILD
-    service ril-daemon /system/bin/rild
+    service hawaii-ril-daemon /system/bin/rild
         class main
         socket rild stream 660 root radio
         socket rild1 stream 660 root radio
