@@ -116,7 +116,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.call_ring.multiple=0 \
     camera2.portability.force_api=1 \
     ro.telephony.call_ring=0 \
-    ro.build.selinux=1 \
+    ro.build.selinux=1
 
 # Enable Google-specific location features,
 # like NetworkLocationProvider and LocationCollector
@@ -133,12 +133,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.kernel.checkjni=0 \
     dalvik.vm.checkjni=false
 
-# ART
-PRODUCT_PROPERTY_OVERRIDES += \
-    dalvik.vm.dex2oat-flags=--no-watch-dog
-    ro.optimize.bcm=true
-
-# Use Awesomeplayer
+# Use AwesomePlayer
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.media.use-awesome=true
 

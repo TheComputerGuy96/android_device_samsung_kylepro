@@ -1,0 +1,32 @@
+From 2c313e48d570898f5a5e5550ea9673e3c88afec4 Mon Sep 17 00:00:00 2001
+From: Dmitry Grinberg <dmitrygr@gmail.com>
+Date: Wed, 4 Nov 2015 10:22:01 +0000
+Subject: [PATCH] dex2oat: Increase timeout to allow slow CPUs to finish
+ compilation
+
+Change-Id: Ib9f19e0acf1a0a5b90d8b7ef2a0daf224cb2aec1
+---
+ dex2oat/dex2oat.cc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/dex2oat/dex2oat.cc b/dex2oat/dex2oat.cc
+index 9d7e68a..2f9cda4 100644
+--- a/dex2oat/dex2oat.cc
++++ b/dex2oat/dex2oat.cc
+@@ -433,10 +433,10 @@ class WatchDog {
+   // Debug builds are slower so they have larger timeouts.
+   static constexpr int64_t kSlowdownFactor = kIsDebugBuild ? 5U : 1U;
+ 
+-  // 9.5 minutes scaled by kSlowdownFactor. This is slightly smaller than the Package Manager
+-  // watchdog (PackageManagerService.WATCHDOG_TIMEOUT, 10 minutes), so that dex2oat will abort
++  // 59.5 minutes scaled by kSlowdownFactor. This is slightly smaller than the Package Manager
++  // watchdog (PackageManagerService.WATCHDOG_TIMEOUT, 60 minutes), so that dex2oat will abort
+   // itself before that watchdog would take down the system server.
+-  static constexpr int64_t kWatchDogTimeoutSeconds = kSlowdownFactor * (9 * 60 + 30);
++  static constexpr int64_t kWatchDogTimeoutSeconds = kSlowdownFactor * (59 * 60 + 30);
+ 
+   bool is_watch_dog_enabled_;
+   bool shutting_down_;
+-- 
+2.10.1
+

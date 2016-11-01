@@ -19,7 +19,7 @@ TARGET_GLOBAL_CFLAGS                        += -mtune=cortex-a9 -mfpu=neon -mflo
 TARGET_GLOBAL_CPPFLAGS                      += -mtune=cortex-a9 -mfpu=neon -mfloat-abi=softfp -O3 -funsafe-math-optimizations
 
 # Assert
-TARGET_OTA_ASSERT_DEVICE                    := kylepro,S7580,GT-S7580,hawaii
+TARGET_OTA_ASSERT_DEVICE                    := kylepro
 
 # Kernel
 BOARD_MKBOOTIMG_ARGS                        := --kernel_offset 0x00008000 --ramdisk_offset 0x01000000 --tags_offset 0x00000100
@@ -34,18 +34,19 @@ else
     TARGET_KERNEL_CONFIG                    := bcm21664_hawaii_ss_kylepro_rev00_cyanogenmod_defconfig
 endif
 TARGET_KERNEL_SOURCE                        := kernel/samsung/kyleproxx
-TARGET_KERNEL_CUSTOM_TOOLCHAIN              := arm-eabi-4.7
-
-# Extended filesystem support
-TARGET_KERNEL_HAVE_EXFAT                    := true
-TARGET_KERNEL_HAVE_NTFS                     := true
+ifeq ($(HOST_OS), darwin)
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/darwin-x86/arm/arm-eabi-4.7/bin
+else
+KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7/bin
+endif
+KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
 
 # Partition size
 BOARD_BOOTIMAGE_PARTITION_SIZE              := 8388608
 BOARD_RECOVERYIMAGE_PARTITION_SIZE          := 9191424
 BOARD_SYSTEMIMAGE_PARTITION_SIZE            := 1210769408
 BOARD_SYSTEMIMAGE_JOURNAL_SIZE              := 0
-BOARD_USERDATAIMAGE_PARTITION_SIZE          := 2373976064
+BOARD_USERDATAIMAGE_PARTITION_SIZE          := 2373959680
 BOARD_CACHEIMAGE_PARTITION_SIZE             := 209715200
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE           := ext4
 BOARD_FLASH_BLOCK_SIZE                      := 262144
@@ -92,7 +93,6 @@ TARGET_SCREEN_WIDTH                         := 480
 
 # Hardware rendering
 USE_OPENGL_RENDERER                         := true
-BOARD_USE_MHEAP_SCREENSHOT                  := true
 BOARD_EGL_WORKAROUND_BUG_10194508           := true
 TARGET_USES_ION                             := true
 HWUI_COMPILE_FOR_PERF                       := true
