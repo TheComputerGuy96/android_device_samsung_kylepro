@@ -101,7 +101,7 @@ PRODUCT_COPY_FILES += \
 
 # Backup Services whitelist
 PRODUCT_COPY_FILES += \
-    $(COMMON_PATH)/configs/backup.xml:system/etc/sysconfig/backup.xml
+    $(LOCAL_PATH)/configs/backup.xml:system/etc/sysconfig/backup.xml
 
 # These are the hardware-specific settings that are stored in system properties.
 # Note that the only such settings should be the ones that are too low-level to
