@@ -33,7 +33,13 @@ PRODUCT_COPY_FILES += \
 # Insecure ADB
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.secure=0 \
-    ro.adb.secure=0 \
+    ro.adb.secure=0
+
+# F2FS tools
+PRODUCT_PACKAGES += \
+    mkfs.f2fs \
+    fsck.f2fs \
+    fibmap.f2fs
 
 # GPS/RIL
 PRODUCT_PACKAGES += \
