@@ -1,4 +1,4 @@
-# LineageOS 14.1  Device tree for Samsung GT-S7580 (kylepro)
+# MoKee 71.1 Device tree for Samsung GT-S7580 (kylepro)
 
 ### Specs (Physically inspected):
   - CPU: Cortex-A9 (Little endian, Dual Core)
@@ -19,7 +19,7 @@
   - WIFI/Bluetooth/FM-Radio: BCM4330
 
 ### Notice:
-  - Apply patch *PATCH_CM-14.1.diff* to root directory of LOS-14.1 source code before build
+  - Apply patch *PATCH_MOKEE71.1.diff* to root directory of MoKee 71.1 source code before build
 
 ### Other resource:
   - Kernel source: https://github.com/ishantvivek/android_kernel_samsung_kyleproxx
