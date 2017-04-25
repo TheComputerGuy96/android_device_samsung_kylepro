@@ -791,14 +791,14 @@ diff -ur a/hardware/broadcom/libbt/src/userial_vendor.c b/hardware/broadcom/libb
      userial_ioctl_init_bt_wake(vnd_userial.fd);
  #endif
  
-diff -ur a/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input/ButtonSettings.java b/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input/ButtonSettings.java
---- a/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input/ButtonSettings.java	2017-01-02 17:10:05.676000000 +0000
-+++ b/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input/ButtonSettings.java	2017-01-02 18:08:47.580000000 +0000
+diff -ur a/packages/apps/MKParts/src/org/mokee/mkparts/input/ButtonSettings.java b/packages/apps/MKParts/src/org/mokee/mkparts/input/ButtonSettings.java
+--- a/packages/apps/MKParts/src/org/mokee/mkparts/input/ButtonSettings.java	2017-01-02 17:10:05.676000000 +0000
++++ b/packages/apps/MKParts/src/org/mokee/mkparts/input/ButtonSettings.java	2017-01-02 18:08:47.580000000 +0000
 @@ -259,7 +259,6 @@
          // Only visible on devices that does not have a navigation bar already,
          // and don't even try unless the existing keys can be disabled
          boolean needsNavigationBar = false;
--        if (hardware.isSupported(CMHardwareManager.FEATURE_KEY_DISABLE)) {
+-        if (hardware.isSupported(MKHardwareManager.FEATURE_KEY_DISABLE)) {
              try {
                  IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
                  needsNavigationBar = wm.needsNavigationBar();
@@ -812,7 +812,6 @@ diff -ur a/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input/ButtonSetting
  
          if (hasPowerKey) {
              if (!TelephonyUtils.isVoiceCapable(getActivity())) {
-Only in b/packages/apps/CMParts/src/org/cyanogenmod/cmparts/input: ButtonSettings.java.orig
 diff -ur a/packages/services/Telephony/res/values/cm_strings.xml b/packages/services/Telephony/res/values/cm_strings.xml
 --- a/packages/services/Telephony/res/values/cm_strings.xml	2017-01-02 17:10:19.276000000 +0000
 +++ b/packages/services/Telephony/res/values/cm_strings.xml	2017-01-02 18:08:47.508000000 +0000
